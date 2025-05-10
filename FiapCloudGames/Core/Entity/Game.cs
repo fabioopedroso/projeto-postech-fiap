@@ -7,11 +7,11 @@ using System.Threading.Tasks;
 namespace Core.Entity;
 public class Game : EntityBase
 {
-    public string Name { get; set; }
+    public required string Name { get; set; }
     public string Description { get; set; }
-    public string Genre { get; set; }
-    public decimal Price { get; set; }
+    public required string Genre { get; set; }
+    public required decimal Price { get; set; }
 
-    public ICollection<User> Users { get; set; }
+    public ICollection<Library> Libraries { get; set; }
     public ICollection<Sale> Sales { get; set; }
 }

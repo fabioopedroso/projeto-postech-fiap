@@ -5,10 +5,10 @@ using System.ComponentModel.DataAnnotations;
 namespace Core.Entity;
 public class User : EntityBase
 {
-    public string Nome { get; set; }
-    public string Email { get; set; }
-    public string Password { get; set; }
-    public UserType UserType { get; set; }
-    
-    public ICollection<Game> Games { get; set; }
+    public required string UserName { get; set; }
+    public required string Email { get; set; }
+    public required string Password { get; set; }
+    public required UserType UserType { get; set; }
+
+    public Library Library { get; set; }
 }
