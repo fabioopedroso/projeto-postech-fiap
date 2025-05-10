@@ -9,7 +9,7 @@ public class LibraryConfiguration : IEntityTypeConfiguration<Library>
     {
         builder.ToTable("Library");
         builder.HasKey(l => l.Id);
-        builder.Property(l => l.Id).HasColumnType("INT").ValueGeneratedNever().UseIdentityColumn();
+        builder.Property(l => l.Id).HasColumnType("INT").UseIdentityColumn();
         builder.Property(l => l.UserId).IsRequired().HasColumnType("INT");
         builder.Property(l => l.GameId).IsRequired().HasColumnType("INT");
         builder.HasOne(l => l.User)

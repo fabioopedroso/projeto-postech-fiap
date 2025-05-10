@@ -9,7 +9,7 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
     {
         builder.ToTable("User");
         builder.HasKey(u => u.Id);
-        builder.Property(u => u.Id).HasColumnType("INT").ValueGeneratedNever().UseIdentityColumn();
+        builder.Property(u => u.Id).HasColumnType("INT").UseIdentityColumn();
         builder.Property(u => u.CreationDate).IsRequired().HasColumnType("TIMESTAMP");
         builder.Property(u => u.IsActive).IsRequired().HasColumnType("BIT");
 

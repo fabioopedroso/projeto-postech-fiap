@@ -9,7 +9,7 @@ public class GameConfiguration : IEntityTypeConfiguration<Game>
     {
         builder.ToTable("Game");
         builder.HasKey(g => g.Id);
-        builder.Property(g => g.Id).HasColumnType("INT").ValueGeneratedNever().UseIdentityColumn();
+        builder.Property(g => g.Id).HasColumnType("INT").UseIdentityColumn();
         builder.Property(g => g.CreationDate).IsRequired().HasColumnType("TIMESTAMP");
         builder.Property(g => g.IsActive).IsRequired().HasColumnType("BIT");
 

@@ -1,4 +1,6 @@
-﻿namespace Core.Entity;
+﻿using Core.Entity.Base;
+
+namespace Core.Entity;
 
 public class Sale : EntityBase
 {
@@ -8,5 +10,5 @@ public class Sale : EntityBase
     public DateTime EndDate { get; set; }
     public decimal DiscountPercentage { get; set; }
 
-    public ICollection<Game> Games { get; set; }
+    public ICollection<Game> Games { get; set; } = new List<Game>();
 }

@@ -2,12 +2,15 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 
-namespace Infrastructure.Repository;
+namespace Infrastructure.Persistense;
 public class ApplicationDbContext : DbContext
 {
-    public DbSet<User> User { get; set; }
-    public DbSet<Game> Game { get; set; }
-    public DbSet<Sale> Sale { get; set; }
+    public DbSet<Cart> Carts { get; set; }
+    public DbSet<Game> Games { get; set; }
+    public DbSet<Library> Libraries { get; set; }
+    public DbSet<Sale> Sales { get; set; }
+    public DbSet<User> Users { get; set; }
+
     private readonly IConfiguration _configuration;
 
     public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options, IConfiguration configuration)
@@ -22,7 +25,6 @@ public class ApplicationDbContext : DbContext
         {
             var connectionString = _configuration.GetConnectionString("ConnectionString");
             optionsBuilder.UseNpgsql(connectionString);
-            //optionsBuilder.UseLazyLoadingProxies();
         }
     }
 

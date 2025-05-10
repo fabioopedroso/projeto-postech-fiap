@@ -1,4 +1,5 @@
-﻿using Core.Enums;
+﻿using Core.Entity.Base;
+using Core.Enums;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
@@ -11,4 +12,5 @@ public class User : EntityBase
     public required UserType UserType { get; set; }
 
     public Library Library { get; set; }
+    public Cart Cart { get; set; }
 }

@@ -9,7 +9,7 @@ public class SaleConfiguration : IEntityTypeConfiguration<Sale>
     {
         builder.ToTable("Sale");
         builder.HasKey(s => s.Id);
-        builder.Property(s => s.Id).HasColumnType("INT").ValueGeneratedNever().UseIdentityColumn();
+        builder.Property(s => s.Id).HasColumnType("INT").UseIdentityColumn();
         builder.Property(s => s.CreationDate).IsRequired().HasColumnType("TIMESTAMP");
         builder.Property(s => s.IsActive).IsRequired().HasColumnType("BIT");
 
