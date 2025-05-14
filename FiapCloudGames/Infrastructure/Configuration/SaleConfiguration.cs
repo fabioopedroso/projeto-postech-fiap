@@ -11,7 +11,7 @@ public class SaleConfiguration : IEntityTypeConfiguration<Sale>
         builder.HasKey(s => s.Id);
         builder.Property(s => s.Id).HasColumnType("INT").UseIdentityColumn();
         builder.Property(s => s.CreationDate).IsRequired().HasColumnType("TIMESTAMP");
-        builder.Property(s => s.IsActive).IsRequired().HasColumnType("BIT");
+        builder.Property(s => s.IsActive).IsRequired().HasColumnType("BOOLEAN");
 
         builder.Property(s => s.Name).IsRequired().HasColumnType("VARCHAR(100)");
         builder.Property(s => s.Description).IsRequired().HasColumnType("VARCHAR(255)");

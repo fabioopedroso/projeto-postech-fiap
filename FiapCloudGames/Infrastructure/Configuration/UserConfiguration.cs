@@ -11,7 +11,7 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
         builder.HasKey(u => u.Id);
         builder.Property(u => u.Id).HasColumnType("INT").UseIdentityColumn();
         builder.Property(u => u.CreationDate).IsRequired().HasColumnType("TIMESTAMP");
-        builder.Property(u => u.IsActive).IsRequired().HasColumnType("BIT");
+        builder.Property(u => u.IsActive).IsRequired().HasColumnType("BOOLEAN");
 
         builder.Property(u => u.UserName).IsRequired().HasColumnType("VARCHAR(100)");
         builder.Property(u => u.Email).IsRequired().HasColumnType("VARCHAR(254)");
