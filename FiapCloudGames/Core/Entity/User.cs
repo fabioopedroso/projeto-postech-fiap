@@ -1,7 +1,5 @@
 ﻿using Core.Entity.Base;
 using Core.Enums;
-using System.ComponentModel;
-using System.ComponentModel.DataAnnotations;
 
 namespace Core.Entity;
 public class User : EntityBase

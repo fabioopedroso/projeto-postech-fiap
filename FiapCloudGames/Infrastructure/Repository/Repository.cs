@@ -15,11 +15,13 @@ public class Repository<T> : IRepository<T> where T : EntityBase
         _dbSet = context.Set<T>();
     }
 
-    public void Create(T entity)
+    public int Create(T entity)
     {
         entity.CreationDate = DateTime.Now;
+        entity.IsActive = true;
         _dbSet.Add(entity);
         _context.SaveChanges();
+        return entity.Id;
     }
 
     public IList<T> GetAll()
