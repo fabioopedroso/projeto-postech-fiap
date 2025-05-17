@@ -10,9 +10,14 @@ namespace Application.Services
     public class UserAppService : IUserAppService
     {
         private readonly IUserRepository _userRepository;
-        public UserAppService(IUserRepository userRepository)
+        private readonly ILibraryRepository _libraryRepository;
+        private readonly ICartRepository _cartRepository;
+
+        public UserAppService(IUserRepository userRepository, ILibraryRepository libraryRepósitory, ICartRepository cartRepository)
         {
             _userRepository = userRepository;
+            _libraryRepository = libraryRepósitory;
+            _cartRepository = cartRepository;
         }
 
         public async Task<bool> CreateUser(CreateUserSignature signature)
@@ -26,6 +31,9 @@ namespace Application.Services
             };
 
             var idUser = _userRepository.Create(user);
+
+            _libraryRepository.Create(new Library { UserId = idUser }); 
+            _cartRepository.Create(new Cart { UserId = idUser });   
 
             return true;
         }

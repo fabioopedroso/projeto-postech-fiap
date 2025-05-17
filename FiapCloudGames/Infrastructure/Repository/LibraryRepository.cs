@@ -1,0 +1,24 @@
+﻿using Core.Entity;
+using Core.Interfaces.Repository;
+using Infrastructure.Persistense;
+using Microsoft.EntityFrameworkCore;
+
+namespace Infrastructure.Repository
+{
+    public class LibraryRepository: ILibraryRepository
+    {
+        protected ApplicationDbContext _context;
+        protected DbSet<Library> _dbSet;
+
+        public LibraryRepository(ApplicationDbContext context)
+        {
+            _context = context;
+            _dbSet = context.Set<Library>();
+        }
+        public void Create(Library library)
+        {
+            _dbSet.Add(library);
+            _context.SaveChanges();
+        }
+    }
+}

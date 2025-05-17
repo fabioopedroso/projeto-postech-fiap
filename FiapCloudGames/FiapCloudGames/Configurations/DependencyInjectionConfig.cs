@@ -1,4 +1,6 @@
-﻿using Core.Interfaces.Repository;
+﻿using Application.Interfaces;
+using Application.Services;
+using Core.Interfaces.Repository;
 using Infrastructure.Repository;
 
 namespace FiapCloudGamesApi.Configurations;
@@ -8,7 +10,7 @@ public static class DependencyInjectionConfig
     public static void RegisterServices(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddRepositories();
-        services.AddServices();
+        services.AddAppServices();
     }
 
     private static void AddRepositories(this IServiceCollection services)
@@ -16,10 +18,12 @@ public static class DependencyInjectionConfig
         services.AddScoped<IUserRepository, UserRepository>();
         services.AddScoped<IGameRepository, GameRepository>();
         services.AddScoped<ISaleRepository, SaleRepository>();
+        services.AddScoped<ILibraryRepository, LibraryRepository>();
+        services.AddScoped<ICartRepository, CartRepository>();
     }
 
-    private static void AddServices(this IServiceCollection services)
+    private static void AddAppServices(this IServiceCollection services)
     {
-        
+        services.AddScoped<IUserAppService, UserAppService>(); 
     }
 }
