@@ -1,5 +1,5 @@
 ﻿using Core.Entity.Base;
-using Core.Repository;
+using Core.Interfaces.Repository;
 using Infrastructure.Persistense;
 using Microsoft.EntityFrameworkCore;
 
