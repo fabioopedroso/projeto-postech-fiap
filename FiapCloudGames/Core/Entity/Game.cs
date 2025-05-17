@@ -11,5 +11,4 @@ public class Game : EntityBase
     public ICollection<Library> Libraries { get; set; } = new List<Library>();
     public ICollection<Sale> Sales { get; set; } = new List<Sale>();
     public ICollection<Cart> Carts { get; set; } = new List<Cart>();
-
 }
