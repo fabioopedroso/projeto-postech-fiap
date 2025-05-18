@@ -11,45 +11,48 @@ namespace Application.Services
 {
     public class UserAppService : IUserAppService
     {
-        private readonly IUserRepository _userRepository;
-        private readonly ILibraryRepository _libraryRepository;
-        private readonly ICartRepository _cartRepository;
+        private readonly IUnitOfWork _unitOfWork;
         private readonly PasswordHasher<User> _passwordHasher;
 
-
-        public UserAppService(IUserRepository userRepository, ILibraryRepository libraryRepósitory, ICartRepository cartRepository)
+        public UserAppService(IUnitOfWork unitOfWork)
         {
-            _userRepository = userRepository;
-            _libraryRepository = libraryRepósitory;
-            _cartRepository = cartRepository;
+            _unitOfWork = unitOfWork;
             _passwordHasher = new PasswordHasher<User>();
-
         }
 
         public async Task<bool> CreateUser(CreateUserSignature signature)
         {
             var email = new Email(signature.Email);
 
-            if (_userRepository.ExistsByEmail(email))
+            if (_unitOfWork.Users.ExistsByEmail(email))
                 throw new ArgumentException("E-mail já cadastrado.");
 
-            var rawPassword = new Password(signature.Password);
+            var password = new Password(signature.Password);
 
-            var hashedPassword = _passwordHasher.HashPassword(null, rawPassword.RawPassword);
+            await _unitOfWork.BeginTransactionAsync();
 
-            var user = new User(
-                signature.UserName,
-                email.Address,
-                hashedPassword,
-                UserType.CommonUser
-            );
+            try
+            {
+                var user = new User(
+                    signature.UserName,
+                    email.Address,
+                    _passwordHasher.HashPassword(null, password.RawPassword),
+                    UserType.CommonUser
+                );
 
-            var idUser = _userRepository.Create(user);
+                var userId = _unitOfWork.Users.Create(user);
 
-            _libraryRepository.Create(new Library { UserId = idUser });
-            _cartRepository.Create(new Cart { UserId = idUser });
+                _unitOfWork.Libraries.Create(new Library { UserId = userId });
+                _unitOfWork.Carts.Create(new Cart { UserId = userId });
 
-            return true;
+                await _unitOfWork.CommitAsync();
+                return true;
+            }
+            catch
+            {
+                await _unitOfWork.RollbackAsync();
+                throw;
+            }
         }
 
         public Task<bool> DeleteUser(int id)

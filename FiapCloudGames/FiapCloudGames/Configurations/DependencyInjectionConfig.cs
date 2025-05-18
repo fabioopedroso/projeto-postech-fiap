@@ -20,6 +20,7 @@ public static class DependencyInjectionConfig
         services.AddScoped<ISaleRepository, SaleRepository>();
         services.AddScoped<ILibraryRepository, LibraryRepository>();
         services.AddScoped<ICartRepository, CartRepository>();
+        services.AddScoped<IUnitOfWork, UnitOfWork>();
     }
 
     private static void AddAppServices(this IServiceCollection services)

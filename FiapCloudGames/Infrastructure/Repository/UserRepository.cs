@@ -1,9 +1,6 @@
-﻿using Core.Entity;
-using Core.Interfaces.Repository;
+﻿using Core.Interfaces.Repository;
 using Core.ValueObjects;
 using Infrastructure.Persistense;
-using Microsoft.EntityFrameworkCore;
-using System.Threading.Tasks;
 
 namespace Infrastructure.Repository
 {
