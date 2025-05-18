@@ -4,6 +4,8 @@ using Application.Interfaces;
 using Core.Entity;
 using Core.Enums;
 using Core.Interfaces.Repository;
+using Core.ValueObjects;
+using Microsoft.AspNetCore.Identity;
 
 namespace Application.Services
 {
@@ -12,28 +14,40 @@ namespace Application.Services
         private readonly IUserRepository _userRepository;
         private readonly ILibraryRepository _libraryRepository;
         private readonly ICartRepository _cartRepository;
+        private readonly PasswordHasher<User> _passwordHasher;
+
 
         public UserAppService(IUserRepository userRepository, ILibraryRepository libraryRepósitory, ICartRepository cartRepository)
         {
             _userRepository = userRepository;
             _libraryRepository = libraryRepósitory;
             _cartRepository = cartRepository;
+            _passwordHasher = new PasswordHasher<User>();
+
         }
 
         public async Task<bool> CreateUser(CreateUserSignature signature)
         {
-            var user = new User
-            {
-                UserName = signature.UserName,
-                Email = signature.Email,
-                Password = signature.Password,
-                UserType = UserType.CommonUser
-            };
+            var email = new Email(signature.Email);
+
+            if (_userRepository.ExistsByEmail(email))
+                throw new ArgumentException("E-mail já cadastrado.");
+
+            var rawPassword = new Password(signature.Password);
+
+            var hashedPassword = _passwordHasher.HashPassword(null, rawPassword.RawPassword);
+
+            var user = new User(
+                signature.UserName,
+                email.Address,
+                hashedPassword,
+                UserType.CommonUser
+            );
 
             var idUser = _userRepository.Create(user);
 
-            _libraryRepository.Create(new Library { UserId = idUser }); 
-            _cartRepository.Create(new Cart { UserId = idUser });   
+            _libraryRepository.Create(new Library { UserId = idUser });
+            _cartRepository.Create(new Cart { UserId = idUser });
 
             return true;
         }

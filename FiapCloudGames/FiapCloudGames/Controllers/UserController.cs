@@ -21,11 +21,11 @@ namespace FiapCloudGamesApi.Controllers
             var result = await _userAppService.CreateUser(signature);
             if (result)
             {
-                return Ok("User created successfully.");
+                return Ok("Usuário criado com sucesso");
             }
             else
             {
-                return StatusCode(500, "An error occurred while creating the user.");
+                return StatusCode(500, "Ocorreu um erro na criação do usuário");
             }
         }
     }
