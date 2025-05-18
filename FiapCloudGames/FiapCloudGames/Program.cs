@@ -4,10 +4,6 @@ using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-var configuration = new ConfigurationBuilder()
-    .AddJsonFile("appsettings.json")
-    .Build();
-
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -16,7 +12,8 @@ builder.Services.RegisterServices(builder.Configuration);
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
 {
-    options.UseNpgsql(configuration.GetConnectionString("ConnectionString"));
+    var connectionString = builder.Configuration.GetConnectionString("ConnectionString");
+    options.UseNpgsql(connectionString);
 }, ServiceLifetime.Scoped);
 
 var app = builder.Build();
