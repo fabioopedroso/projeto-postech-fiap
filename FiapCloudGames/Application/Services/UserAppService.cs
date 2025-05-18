@@ -5,19 +5,16 @@ using Core.Entity;
 using Core.Enums;
 using Core.Interfaces.Repository;
 using Core.ValueObjects;
-using Microsoft.AspNetCore.Identity;
 
 namespace Application.Services
 {
     public class UserAppService : IUserAppService
     {
         private readonly IUnitOfWork _unitOfWork;
-        private readonly PasswordHasher<User> _passwordHasher;
 
         public UserAppService(IUnitOfWork unitOfWork)
         {
             _unitOfWork = unitOfWork;
-            _passwordHasher = new PasswordHasher<User>();
         }
 
         public async Task<bool> CreateUser(CreateUserSignature signature)
@@ -29,17 +26,12 @@ namespace Application.Services
 
             var password = new Password(signature.Password);
 
+            var user = new User(signature.UserName, email.Address, password, UserType.CommonUser);
+
             await _unitOfWork.BeginTransactionAsync();
 
             try
             {
-                var user = new User(
-                    signature.UserName,
-                    email.Address,
-                    _passwordHasher.HashPassword(null, password.RawPassword),
-                    UserType.CommonUser
-                );
-
                 var userId = _unitOfWork.Users.Create(user);
 
                 _unitOfWork.Libraries.Create(new Library { UserId = userId });
