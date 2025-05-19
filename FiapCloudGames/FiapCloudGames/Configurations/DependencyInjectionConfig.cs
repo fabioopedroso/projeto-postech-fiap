@@ -25,6 +25,7 @@ public static class DependencyInjectionConfig
 
     private static void AddAppServices(this IServiceCollection services)
     {
-        services.AddScoped<IUserAppService, UserAppService>(); 
+        services.AddScoped<IUserAppService, UserAppService>();
+        services.AddScoped<IAuthAppService, AuthAppService>();
     }
 }

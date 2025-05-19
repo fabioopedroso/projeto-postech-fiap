@@ -2,7 +2,7 @@
 
 namespace Application.DTOs.Signatures
 {
-    public class UsersSignature
+    public class UserSignature
     {
         public int? Id { get; set; }
         public DateTime? CreationDate { get; set; }

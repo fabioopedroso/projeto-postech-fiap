@@ -6,8 +6,8 @@ namespace Application.Interfaces
     public interface IUserAppService
     {
         Task<bool> CreateUser(CreateUserSignature signature);
-        Task<bool> UpdateUser(UsersSignature signature);
+        Task<bool> UpdateUser(UserSignature signature);
         Task<bool> DeleteUser(int id); //soft delete
-        Task<IEnumerable<UsersResult>> GetUsers(UsersSignature signature);
+        Task<IEnumerable<UsersResult>> GetUsers(UserSignature signature);
     }
 }

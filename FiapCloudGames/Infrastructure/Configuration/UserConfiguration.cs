@@ -16,7 +16,7 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
 
         var passwordConverter = new ValueConverter<Password, string>(
                 password => password.Hashed,
-                value => new Password(value)
+                value => Password.FromHashed(value)
             );
 
         builder.ToTable("User");
@@ -29,5 +29,7 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
         builder.Property(u => u.Email).IsRequired().HasConversion(emailConverter).HasColumnType("VARCHAR(254)");
         builder.Property(u => u.Password).IsRequired().HasConversion(passwordConverter).HasColumnType("VARCHAR(255)");
         builder.Property(u => u.UserType).IsRequired().HasColumnType("INT");
+
+        builder.HasIndex(u => u.Email).IsUnique();
     }
 }
