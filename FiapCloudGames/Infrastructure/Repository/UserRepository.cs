@@ -1,6 +1,7 @@
 ﻿using Core.Interfaces.Repository;
 using Core.ValueObjects;
 using Infrastructure.Persistense;
+using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Repository
 {
@@ -8,10 +9,12 @@ namespace Infrastructure.Repository
     {
         public UserRepository(ApplicationDbContext context) : base(context) { }
 
-        public bool ExistsByEmail(Email email)
+        public Task<bool> ExistsByEmailAsync(Email email)
         {
-            bool exists = _dbSet.Any(u => u.Email == email.Address);
-            return exists;
+            return _dbSet.AnyAsync(user => user.Email == email);
         }
+
+        public async Task<User?> GetByEmailAsync(Email email)
+            => await _dbSet.FirstOrDefaultAsync(u => u.Email.Address == email.Address);
     }
 }

@@ -12,6 +12,11 @@ public class Email
         Address = address;
     }
 
+    public Email()
+    {
+        Address = string.Empty;
+    }
+
     public static bool IsValidEmail(string email)
     {
         if (string.IsNullOrWhiteSpace(email))
@@ -27,4 +32,6 @@ public class Email
             return false;
         }
     }
+
+    public override string ToString() => Address;
 }

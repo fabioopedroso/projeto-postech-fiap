@@ -15,10 +15,11 @@ namespace Infrastructure.Repository
             _context = context;
             _dbSet = context.Set<Cart>();
         }
-        public void Create(Cart cart)
+
+        public async Task CreateAsync(Cart cart)
         {
             _dbSet.Add(cart);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
         }
     }
 }

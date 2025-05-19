@@ -15,7 +15,7 @@ public class Repository<T> : IRepository<T> where T : EntityBase
         _dbSet = context.Set<T>();
     }
 
-    public int Create(T entity)
+    public async Task<int> CreateAsync(T entity)
     {
         entity.CreationDate = DateTime.Now;
         entity.IsActive = true;

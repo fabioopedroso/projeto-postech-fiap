@@ -4,6 +4,6 @@ namespace Core.Interfaces.Repository
 {
     public interface ICartRepository
     {
-        void Create(Cart cart);
+        Task CreateAsync(Cart cart);
     }
 }

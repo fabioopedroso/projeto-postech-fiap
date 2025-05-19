@@ -4,6 +4,6 @@ namespace Core.Interfaces.Repository
 {
     public interface ILibraryRepository
     {
-        void Create(Library library);
+        Task CreateAsync(Library library);
     }
 }

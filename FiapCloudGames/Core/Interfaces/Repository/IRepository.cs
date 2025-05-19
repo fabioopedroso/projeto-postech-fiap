@@ -3,7 +3,7 @@
 namespace Core.Interfaces.Repository;
 public interface IRepository<T> where T : EntityBase
 {
-    int Create(T entity);
+    Task<int> CreateAsync(T entity);
     IList<T> GetAll();
     T GetById(int id);
     void Update(T entity);

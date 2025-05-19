@@ -21,23 +21,23 @@ namespace Application.Services
         {
             var email = new Email(signature.Email);
 
-            if (_unitOfWork.Users.ExistsByEmail(email))
-                throw new ArgumentException("E-mail já cadastrado.");
+            if (await _unitOfWork.Users.ExistsByEmailAsync(email))
+                throw new InvalidOperationException("E-mail já cadastrado.");
 
             var password = new Password(signature.Password);
 
-            var user = new User(signature.UserName, email.Address, password, UserType.CommonUser);
+            var user = new User(signature.UserName, email, password, UserType.CommonUser);
 
             await _unitOfWork.BeginTransactionAsync();
 
             try
             {
-                var userId = _unitOfWork.Users.Create(user);
+                await _unitOfWork.Users.CreateAsync(user);
 
-                _unitOfWork.Libraries.Create(new Library { UserId = userId });
-                _unitOfWork.Carts.Create(new Cart { UserId = userId });
-
+                await _unitOfWork.Libraries.CreateAsync(new Library { UserId = user.Id });
+                await _unitOfWork.Carts.CreateAsync(new Cart { UserId = user.Id });
                 await _unitOfWork.CommitAsync();
+                
                 return true;
             }
             catch

@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Repository
 {
-    public class LibraryRepository: ILibraryRepository
+    public class LibraryRepository : ILibraryRepository
     {
         protected ApplicationDbContext _context;
         protected DbSet<Library> _dbSet;
@@ -15,10 +15,11 @@ namespace Infrastructure.Repository
             _context = context;
             _dbSet = context.Set<Library>();
         }
-        public void Create(Library library)
+
+        public async Task CreateAsync(Library library)
         {
             _dbSet.Add(library);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
         }
     }
 }
