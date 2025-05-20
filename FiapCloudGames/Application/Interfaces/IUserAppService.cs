@@ -1,4 +1,5 @@
-﻿using Application.DTOs.User.Results;
+﻿using Application.DTOs.Game.Result;
+using Application.DTOs.User.Results;
 using Application.DTOs.User.Signatures;
 
 namespace Application.Interfaces
@@ -9,5 +10,6 @@ namespace Application.Interfaces
         Task UpdateUser(UserSignature signature);
         Task DeleteUser(int id); //soft delete
         Task<IEnumerable<UserDto>> GetUsers(UserSignature signature);
+        Task<IEnumerable<GameDto>> ListLibraryGamesAsync();
     }
 }

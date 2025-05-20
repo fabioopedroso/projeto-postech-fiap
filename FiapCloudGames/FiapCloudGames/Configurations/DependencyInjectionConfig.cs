@@ -9,6 +9,7 @@ public static class DependencyInjectionConfig
 {
     public static void RegisterServices(this IServiceCollection services, IConfiguration configuration)
     {
+        services.AddHttpContextAccessor();
         services.AddRepositories();
         services.AddAppServices();
     }
@@ -27,5 +28,7 @@ public static class DependencyInjectionConfig
     {
         services.AddScoped<IUserAppService, UserAppService>();
         services.AddScoped<IAuthAppService, AuthAppService>();
+        services.AddScoped<IGameAppService, GameAppService>();
+        services.AddScoped<ICurrentUserAppService, CurrentUserAppService>();
     }
 }

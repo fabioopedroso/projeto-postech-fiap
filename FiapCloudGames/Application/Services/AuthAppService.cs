@@ -49,9 +49,10 @@ public class AuthAppService : IAuthAppService
     {
         return new[]
         {
+            new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
             new Claim("UserName", user.UserName),
             new Claim("Email", user.Email.Address),
-            new Claim("UserType", user.UserType.ToString())
+            new Claim(ClaimTypes.Role, user.UserType.ToString())
         };
     }
 

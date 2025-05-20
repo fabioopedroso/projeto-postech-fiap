@@ -1,4 +1,5 @@
-﻿using Application.DTOs.User.Results;
+﻿using Application.DTOs.Game.Result;
+using Application.DTOs.User.Results;
 using Application.DTOs.User.Signatures;
 using Application.Interfaces;
 using Core.Entity;
@@ -11,10 +12,12 @@ namespace Application.Services
     public class UserAppService : IUserAppService
     {
         private readonly IUnitOfWork _unitOfWork;
+        private readonly ICurrentUserAppService _currentUser;
 
-        public UserAppService(IUnitOfWork unitOfWork)
+        public UserAppService(IUnitOfWork unitOfWork, ICurrentUserAppService currentUserAppService)
         {
             _unitOfWork = unitOfWork;
+            _currentUser = currentUserAppService;
         }
 
         public async Task Register(RegisterDto signature)
@@ -51,6 +54,25 @@ namespace Application.Services
         public Task UpdateUser(UserSignature signature)
         {
             throw new NotImplementedException();
+        }
+
+        public async Task<IEnumerable<GameDto>> ListLibraryGamesAsync()
+        {
+            var user = await _unitOfWork.Users.GetUserLibraryGamesAsync(_currentUser.UserId);
+
+            if (user?.Library?.Games == null)
+                return Enumerable.Empty<GameDto>();
+
+            return user.Library.Games.Select(game => new GameDto
+            {
+                Id = game.Id,
+                CreationDate = game.CreationDate,
+                IsActive = game.IsActive,
+                Name = game.Name,
+                Description = game.Description,
+                Genre = game.Genre,
+                Price = game.Price
+            });
         }
 
         #region PrivatedMethods
