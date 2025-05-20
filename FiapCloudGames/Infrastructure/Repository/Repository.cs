@@ -15,30 +15,30 @@ public class Repository<T> : IRepository<T> where T : EntityBase
         _dbSet = context.Set<T>();
     }
 
-    public async Task<int> CreateAsync(T entity)
+    public async Task<T> CreateAsync(T entity)
     {
         entity.CreationDate = DateTime.Now;
         entity.IsActive = true;
         _dbSet.Add(entity);
-        _context.SaveChanges();
-        return entity.Id;
+        await _context.SaveChangesAsync();
+        return entity;
     }
 
-    public IList<T> GetAll()
-        => _dbSet.ToList();
+    public async Task<IList<T>> GetAllAsync()
+        => await _dbSet.ToListAsync();
 
-    public T GetById(int id)
-        => _dbSet.FirstOrDefault(entity => entity.Id == id);
+    public async Task<T> GetByIdAsync(int id)
+        => await _dbSet.FirstOrDefaultAsync(entity => entity.Id == id) ?? throw new KeyNotFoundException($"Id {id} não encontrado.");
 
-    public void Update(T entity)
+    public async Task UpdateAsync(T entity)
     {
         _dbSet.Update(entity);
-        _context.SaveChanges();
+        await _context.SaveChangesAsync();
     }
 
-    public void Delete(T entity)
+    public async Task DeleteAsync(T entity)
     {
         _dbSet.Remove(entity);
-        _context.SaveChanges();
+        await _context.SaveChangesAsync();
     }
 }

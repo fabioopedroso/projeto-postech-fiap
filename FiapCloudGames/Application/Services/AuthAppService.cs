@@ -1,4 +1,4 @@
-﻿using Application.DTOs.Signatures;
+﻿using Application.DTOs.Auth.Signature;
 using Application.Interfaces;
 using Core.Interfaces.Repository;
 using Microsoft.Extensions.Configuration;

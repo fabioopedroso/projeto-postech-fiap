@@ -1,8 +1,8 @@
 ﻿using Core.Enums;
 
-namespace Application.DTOs.Results
+namespace Application.DTOs.User.Results
 {
-    public class UsersResult
+    public class UserDto
     {
         public int Id { get; set; }
         public DateTime CreationDate { get; set; }

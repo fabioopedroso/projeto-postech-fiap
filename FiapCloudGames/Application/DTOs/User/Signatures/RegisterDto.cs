@@ -5,9 +5,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Application.DTOs.Signatures
+namespace Application.DTOs.User.Signatures
 {
-    public class CreateUserSignature
+    public class RegisterDto
     {
         public string UserName { get; set; }
         public string Email { get; set; }

@@ -1,5 +1,5 @@
-﻿using Application.DTOs.Results;
-using Application.DTOs.Signatures;
+﻿using Application.DTOs.User.Results;
+using Application.DTOs.User.Signatures;
 using Application.Interfaces;
 using Core.Entity;
 using Core.Enums;
@@ -17,7 +17,7 @@ namespace Application.Services
             _unitOfWork = unitOfWork;
         }
 
-        public async Task<bool> CreateUser(CreateUserSignature signature)
+        public async Task Register(RegisterDto signature)
         {
             await EnsureEmailIsUnique(signature.Email);
             await EnsureUserNameIsUnique(signature.UserName);
@@ -30,26 +30,25 @@ namespace Application.Services
             {
                 await PersistUserAsync(user);
                 await _unitOfWork.CommitAsync();
-                return true;
             }
-            catch
+            catch (Exception ex)
             {
                 await _unitOfWork.RollbackAsync();
-                throw;
+                throw new ApplicationException("Ocorre um erro ao registrar o usuário.", ex);
             }
         }
 
-        public Task<bool> DeleteUser(int id)
+        public Task DeleteUser(int id)
         {
             throw new NotImplementedException();
         }
 
-        public Task<IEnumerable<UsersResult>> GetUsers(UserSignature signature)
+        public Task<IEnumerable<UserDto>> GetUsers(UserSignature signature)
         {
             throw new NotImplementedException();
         }
 
-        public Task<bool> UpdateUser(UserSignature signature)
+        public Task UpdateUser(UserSignature signature)
         {
             throw new NotImplementedException();
         }
@@ -68,7 +67,7 @@ namespace Application.Services
                 throw new InvalidOperationException("Este nome de usuário já está sendo usado.");
         }
 
-        private User BuildUser(CreateUserSignature signature)
+        private User BuildUser(RegisterDto signature)
         {
             var email = new Email(signature.Email);
             var password = new Password(signature.Password);

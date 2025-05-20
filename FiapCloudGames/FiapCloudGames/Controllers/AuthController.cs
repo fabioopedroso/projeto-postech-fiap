@@ -1,4 +1,4 @@
-﻿using Application.DTOs.Signatures;
+﻿using Application.DTOs.Auth.Signature;
 using Application.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 

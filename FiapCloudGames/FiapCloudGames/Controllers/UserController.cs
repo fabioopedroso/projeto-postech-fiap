@@ -1,4 +1,4 @@
-﻿using Application.DTOs.Signatures;
+﻿using Application.DTOs.User.Signatures;
 using Application.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -16,18 +16,13 @@ namespace FiapCloudGamesApi.Controllers
             _userAppService = userAppService;
         }
 
-        [HttpPost("CreateUser")]
-        public async Task<IActionResult> CreateUser([FromBody] CreateUserSignature signature)
+
+        [HttpPost("Register")]
+        [AllowAnonymous]
+        public async Task<IActionResult> Register([FromBody] RegisterDto signature)
         {
-            var result = await _userAppService.CreateUser(signature);
-            if (result)
-            {
-                return Ok("Usuário criado com sucesso");
-            }
-            else
-            {
-                return StatusCode(500, "Ocorreu um erro na criação do usuário");
-            }
+            await _userAppService.Register(signature);
+            return NoContent();
         }
     }
 }

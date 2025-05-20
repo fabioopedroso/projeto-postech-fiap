@@ -1,4 +1,4 @@
-﻿using Application.DTOs.Signatures;
+﻿using Application.DTOs.Auth.Signature;
 
 namespace Application.Interfaces;
 public interface IAuthAppService

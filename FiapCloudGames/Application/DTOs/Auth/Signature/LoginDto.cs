@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Application.DTOs.Signatures;
+namespace Application.DTOs.Auth.Signature;
 public class LoginDto
 {
     public string UserName { get; set; }

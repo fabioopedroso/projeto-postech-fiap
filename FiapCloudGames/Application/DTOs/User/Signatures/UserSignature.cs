@@ -1,6 +1,6 @@
 ﻿using Core.Enums;
 
-namespace Application.DTOs.Signatures
+namespace Application.DTOs.User.Signatures
 {
     public class UserSignature
     {

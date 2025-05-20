@@ -1,13 +1,13 @@
-﻿using Application.DTOs.Results;
-using Application.DTOs.Signatures;
+﻿using Application.DTOs.User.Results;
+using Application.DTOs.User.Signatures;
 
 namespace Application.Interfaces
 {
     public interface IUserAppService
     {
-        Task<bool> CreateUser(CreateUserSignature signature);
-        Task<bool> UpdateUser(UserSignature signature);
-        Task<bool> DeleteUser(int id); //soft delete
-        Task<IEnumerable<UsersResult>> GetUsers(UserSignature signature);
+        Task Register(RegisterDto signature);
+        Task UpdateUser(UserSignature signature);
+        Task DeleteUser(int id); //soft delete
+        Task<IEnumerable<UserDto>> GetUsers(UserSignature signature);
     }
 }

@@ -3,9 +3,9 @@
 namespace Core.Interfaces.Repository;
 public interface IRepository<T> where T : EntityBase
 {
-    Task<int> CreateAsync(T entity);
-    IList<T> GetAll();
-    T GetById(int id);
-    void Update(T entity);
-    void Delete(T entity);
+    Task<T> CreateAsync(T entity);
+    Task<IList<T>> GetAllAsync();
+    Task<T> GetByIdAsync(int id);
+    Task UpdateAsync(T entity);
+    Task DeleteAsync(T entity);
 }
