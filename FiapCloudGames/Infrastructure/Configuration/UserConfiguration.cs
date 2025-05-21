@@ -30,6 +30,7 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
         builder.Property(u => u.Password).IsRequired().HasConversion(passwordConverter).HasColumnType("VARCHAR(255)");
         builder.Property(u => u.UserType).IsRequired().HasColumnType("INT");
 
+        builder.HasIndex(u => u.UserName).IsUnique();
         builder.HasIndex(u => u.Email).IsUnique();
     }
 }

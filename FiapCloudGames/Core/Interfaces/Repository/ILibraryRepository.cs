@@ -6,5 +6,6 @@ namespace Core.Interfaces.Repository
     {
         Task CreateAsync(Library library);
         Task<IEnumerable<Game>> GetGamesByUserIdAsync(int userId);
+        Task AddGames(int userId, IEnumerable<Game> games);
     }
 }

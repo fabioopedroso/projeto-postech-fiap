@@ -31,6 +31,7 @@ public static class DependencyInjectionConfig
         services.AddScoped<IGameAppService, GameAppService>();
         services.AddScoped<ILibraryAppService, LibraryAppService>();
         services.AddScoped<ICartAppService, CartAppService>();
+        services.AddScoped<ICheckoutAppService, CheckoutAppService>();
         services.AddScoped<ICurrentUserAppService, CurrentUserAppService>();
     }
 }

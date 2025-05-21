@@ -29,5 +29,18 @@ namespace Infrastructure.Repository
                 .SelectMany(l => l.Games)
                 .ToListAsync();
         }
+
+        public async Task AddGames(int userId, IEnumerable<Game> games)
+        {
+            var library = _context.Set<Library>()
+                .Include(l => l.Games)
+                .First(l => l.User.Id == userId);
+
+            foreach (var game in games)
+                if (!library.Games.Any(g => g.Id == game.Id))
+                    library.Games.Add(game);
+
+            await _context.SaveChangesAsync();
+        }
     }
 }
