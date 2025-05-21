@@ -56,25 +56,6 @@ namespace Application.Services
             throw new NotImplementedException();
         }
 
-        public async Task<IEnumerable<GameDto>> ListLibraryGamesAsync()
-        {
-            var user = await _unitOfWork.Users.GetUserLibraryGamesAsync(_currentUser.UserId);
-
-            if (user?.Library?.Games == null)
-                return Enumerable.Empty<GameDto>();
-
-            return user.Library.Games.Select(game => new GameDto
-            {
-                Id = game.Id,
-                CreationDate = game.CreationDate,
-                IsActive = game.IsActive,
-                Name = game.Name,
-                Description = game.Description,
-                Genre = game.Genre,
-                Price = game.Price
-            });
-        }
-
         #region PrivatedMethods
         private async Task EnsureEmailIsUnique(string emailString)
         {

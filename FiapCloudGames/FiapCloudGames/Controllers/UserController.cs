@@ -16,14 +16,6 @@ namespace FiapCloudGamesApi.Controllers
             _userAppService = userAppService;
         }
 
-        [HttpGet("ListLibraryGames")]
-        [Authorize(Roles = "CommonUser")]
-        public async Task<IActionResult> ListLibraryGames()
-        {
-            var games = await _userAppService.ListLibraryGamesAsync();
-            return Ok(games);
-        }
-
         [HttpPost("Register")]
         [AllowAnonymous]
         public async Task<IActionResult> Register([FromBody] RegisterDto signature)

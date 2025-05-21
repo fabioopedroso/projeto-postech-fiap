@@ -21,5 +21,13 @@ namespace Infrastructure.Repository
             _dbSet.Add(library);
             await _context.SaveChangesAsync();
         }
+
+        public async Task<IEnumerable<Game>> GetGamesByUserIdAsync(int userId)
+        {
+            return await _context.Set<Library>()
+                .Where(l => l.User.Id == userId)
+                .SelectMany(l => l.Games)
+                .ToListAsync();
+        }
     }
 }
