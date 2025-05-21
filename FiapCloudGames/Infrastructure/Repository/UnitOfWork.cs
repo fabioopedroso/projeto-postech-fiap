@@ -31,19 +31,24 @@ namespace Infrastructure.Repository
 
         public async Task BeginTransactionAsync()
         {
-            _transaction = await _context.Database.BeginTransactionAsync();
+            if (_transaction == null)
+                _transaction = await _context.Database.BeginTransactionAsync();
         }
 
         public async Task CommitAsync()
         {
             try
             {
-                await _context.SaveChangesAsync();
                 if (_transaction != null)
                 {
+                    await _context.SaveChangesAsync();
                     await _transaction.CommitAsync();
                     await _transaction.DisposeAsync();
                     _transaction = null;
+                }
+                else
+                {
+                    await _context.SaveChangesAsync();
                 }
             }
             catch

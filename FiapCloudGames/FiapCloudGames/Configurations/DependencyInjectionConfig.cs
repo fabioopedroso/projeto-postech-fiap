@@ -30,6 +30,7 @@ public static class DependencyInjectionConfig
         services.AddScoped<IAuthAppService, AuthAppService>();
         services.AddScoped<IGameAppService, GameAppService>();
         services.AddScoped<ILibraryAppService, LibraryAppService>();
+        services.AddScoped<ICartAppService, CartAppService>();
         services.AddScoped<ICurrentUserAppService, CurrentUserAppService>();
     }
 }

@@ -17,11 +17,5 @@ namespace Infrastructure.Repository
 
         public async Task<User?> GetByUserNameAsync(string userName)
             => await _dbSet.FirstOrDefaultAsync(u => u.UserName == userName);
-
-        public async Task<User?> GetUserLibraryGamesAsync(int userId)
-            => await _dbSet
-                .Include(u => u.Library)
-                .ThenInclude(l => l.Games)
-                .FirstOrDefaultAsync(u => u.Id == userId);
     }
 }

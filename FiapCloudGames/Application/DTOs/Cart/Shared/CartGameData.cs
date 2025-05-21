@@ -1,9 +1,6 @@
-﻿using System.Text.Json.Serialization;
-
-namespace Application.DTOs.Game.Signature;
-public class UpdateGameDto
+﻿namespace Application.DTOs.Cart.Shared;
+public class CartGameData
 {
-    [JsonIgnore]
     public int Id { get; set; }
     public string Name { get; set; }
     public string Description { get; set; }

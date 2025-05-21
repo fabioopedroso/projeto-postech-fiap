@@ -18,30 +18,31 @@ public class GameController : ControllerBase
         _gameAppService = gameAppService;
     }
 
-    [HttpGet("GetAll")]
+    [HttpGet]
     public async Task<IActionResult> GetAll()
     {
         var result = await _gameAppService.GetAllAsync();
         return Ok(result);
     }
 
-    [HttpGet("GetById/{id:int}")]
+    [HttpGet("{id:int}")]
     public async Task<IActionResult> GetById(int id)
     {
         var result = await _gameAppService.GetByIdAsync(id);
         return Ok(result);
     }
 
-    [HttpPost("Add")]
+    [HttpPost]
     public async Task<IActionResult> Add([FromBody] AddGameDto dto)
     {
         var result = await _gameAppService.AddAsync(dto);
         return Ok(result);
     }
 
-    [HttpPut("Update")]
-    public async Task<IActionResult> Update([FromBody] UpdateGameDto dto)
+    [HttpPut("{id:int}")]
+    public async Task<IActionResult> Update([FromRoute] int id, [FromBody] UpdateGameDto dto)
     {
+        dto.Id = id;
         await _gameAppService.UpdateAsync(dto);
         return NoContent();
     }
