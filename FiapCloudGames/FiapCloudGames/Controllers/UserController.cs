@@ -18,9 +18,25 @@ namespace FiapCloudGamesApi.Controllers
 
         [HttpPost("Register")]
         [AllowAnonymous]
-        public async Task<IActionResult> Register([FromBody] RegisterDto signature)
+        public async Task<IActionResult> Register([FromBody] RegisterDto dto)
         {
-            await _userAppService.Register(signature);
+            await _userAppService.Register(dto);
+            return NoContent();
+        }
+
+        [HttpPost("ChangePassword")]
+        [Authorize(Roles = "Administrator,CommonUser")]
+        public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordDto dto)
+        {
+            await _userAppService.ChangePassword(dto);
+            return NoContent();
+        }
+
+        [HttpDelete("DeleteUser")]
+        [Authorize(Roles = "Administrator,CommonUser")]
+        public async Task<IActionResult> DeleteUser(DeleteUserDto dto)
+        {
+            await _userAppService.DeleteUser(dto);
             return NoContent();
         }
     }

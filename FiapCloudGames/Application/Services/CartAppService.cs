@@ -1,4 +1,5 @@
-﻿using Application.DTOs.Cart.Result;
+﻿using Application.Contracts;
+using Application.DTOs.Cart.Result;
 using Application.DTOs.Cart.Shared;
 using Application.Interfaces;
 using Core.Interfaces.Repository;
@@ -7,9 +8,9 @@ namespace Application.Services;
 public class CartAppService : ICartAppService
 {
     private readonly IUnitOfWork _unitOfWork;
-    private readonly ICurrentUserAppService _currentUserAppService;
+    private readonly ICurrentUseService _currentUserAppService;
 
-    public CartAppService(IUnitOfWork unitOfWork, ICurrentUserAppService currentUserAppService)
+    public CartAppService(IUnitOfWork unitOfWork, ICurrentUseService currentUserAppService)
     {
         _unitOfWork = unitOfWork;
         _currentUserAppService = currentUserAppService;

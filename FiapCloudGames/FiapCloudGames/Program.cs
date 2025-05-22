@@ -1,16 +1,17 @@
-using FiapCloudGamesApi.Configurations;
+using Infrastructure.IoC;
+using FiapCloudGamesApi.Middlewares;
 using Infrastructure.Persistense;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
-using Microsoft.OpenApi.Services;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
+
 builder.Services.AddSwaggerGen(options =>
 {
     options.SwaggerDoc("v1", new() 
@@ -81,6 +82,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseAuthentication();
+app.UseMiddleware<ValidateUserExistsMiddleware>();
 app.UseAuthorization();
 app.MapControllers();
 

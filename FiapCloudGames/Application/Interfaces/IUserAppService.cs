@@ -6,10 +6,8 @@ namespace Application.Interfaces
 {
     public interface IUserAppService
     {
-        Task Register(RegisterDto signature);
-        Task UpdateUser(UserSignature signature);
-        Task DeleteUser(int id); //soft delete
-        Task<IEnumerable<UserDto>> GetUsers(UserSignature signature);
-
+        Task Register(RegisterDto dto);
+        Task ChangePassword(ChangePasswordDto dto);
+        Task DeleteUser(DeleteUserDto dto);
     }
 }

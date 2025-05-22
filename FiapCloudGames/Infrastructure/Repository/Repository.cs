@@ -28,7 +28,7 @@ public class Repository<T> : IRepository<T> where T : EntityBase
         => await _dbSet.ToListAsync();
 
     public async Task<T> GetByIdAsync(int id)
-        => await _dbSet.FirstOrDefaultAsync(entity => entity.Id == id) ?? throw new KeyNotFoundException($"Id {id} não encontrado.");
+        => await _dbSet.FirstOrDefaultAsync(entity => entity.Id == id);
 
     public async Task UpdateAsync(T entity)
     {

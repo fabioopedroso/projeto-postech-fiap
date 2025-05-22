@@ -1,5 +1,5 @@
-﻿namespace Application.Interfaces;
-public interface ICurrentUserAppService
+﻿namespace Application.Contracts;
+public interface ICurrentUseService
 {
     int UserId { get; }
     string UserName { get; }

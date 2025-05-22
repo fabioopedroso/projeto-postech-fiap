@@ -27,4 +27,9 @@ public class User : EntityBase
     {
         return Password.Verify(plainTextPassword);
     }
+
+    public void ChangePassword(Password password)
+    {
+        Password = password;
+    }
 }

@@ -1,9 +1,15 @@
-﻿using Application.Interfaces;
+﻿using Application.Contracts;
+using Application.Interfaces;
 using Application.Services;
 using Core.Interfaces.Repository;
+using Infrastructure.Identity;
 using Infrastructure.Repository;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Infrastructure.Authentication;
 
-namespace FiapCloudGamesApi.Configurations;
+
+namespace Infrastructure.IoC;
 
 public static class DependencyInjectionConfig
 {
@@ -12,6 +18,7 @@ public static class DependencyInjectionConfig
         services.AddHttpContextAccessor();
         services.AddRepositories();
         services.AddAppServices();
+        services.AddServices();
     }
 
     private static void AddRepositories(this IServiceCollection services)
@@ -27,11 +34,16 @@ public static class DependencyInjectionConfig
     private static void AddAppServices(this IServiceCollection services)
     {
         services.AddScoped<IUserAppService, UserAppService>();
-        services.AddScoped<IAuthAppService, AuthAppService>();
         services.AddScoped<IGameAppService, GameAppService>();
         services.AddScoped<ILibraryAppService, LibraryAppService>();
         services.AddScoped<ICartAppService, CartAppService>();
         services.AddScoped<ICheckoutAppService, CheckoutAppService>();
-        services.AddScoped<ICurrentUserAppService, CurrentUserAppService>();
+        services.AddScoped<IUserAdminAppService, UserAdminAppService>();
+    }
+
+    private static void AddServices(this IServiceCollection services)
+    {
+        services.AddScoped<IAuthService, AuthService>();
+        services.AddScoped<ICurrentUseService, CurrentUserService>();
     }
 }

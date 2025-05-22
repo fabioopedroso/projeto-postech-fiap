@@ -1,7 +1,7 @@
 ﻿using Application.DTOs.Auth.Signature;
 
-namespace Application.Interfaces;
-public interface IAuthAppService
+namespace Application.Contracts;
+public interface IAuthService
 {
     Task<string> GenerateToken(LoginDto user);
 }

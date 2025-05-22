@@ -1,4 +1,5 @@
-﻿using Application.DTOs.Game.Result;
+﻿using Application.Contracts;
+using Application.DTOs.Game.Result;
 using Application.DTOs.User.Results;
 using Application.DTOs.User.Signatures;
 using Application.Interfaces;
@@ -12,20 +13,20 @@ namespace Application.Services
     public class UserAppService : IUserAppService
     {
         private readonly IUnitOfWork _unitOfWork;
-        private readonly ICurrentUserAppService _currentUser;
+        private readonly ICurrentUseService _currentUser;
 
-        public UserAppService(IUnitOfWork unitOfWork, ICurrentUserAppService currentUserAppService)
+        public UserAppService(IUnitOfWork unitOfWork, ICurrentUseService currentUserAppService)
         {
             _unitOfWork = unitOfWork;
             _currentUser = currentUserAppService;
         }
 
-        public async Task Register(RegisterDto signature)
+        public async Task Register(RegisterDto dto)
         {
-            await EnsureEmailIsUnique(signature.Email);
-            await EnsureUserNameIsUnique(signature.UserName);
+            await EnsureEmailIsUnique(dto.Email);
+            await EnsureUserNameIsUnique(dto.UserName);
 
-            var user = BuildUser(signature);
+            var user = BuildUser(dto);
 
             await _unitOfWork.BeginTransactionAsync();
 
@@ -41,19 +42,56 @@ namespace Application.Services
             }
         }
 
-        public Task DeleteUser(int id)
+        public async Task ChangePassword(ChangePasswordDto dto)
         {
-            throw new NotImplementedException();
+            var user = await _unitOfWork.Users.GetByIdAsync(_currentUser.UserId);
+            if (user is null)
+                throw new InvalidOperationException("Usuário não encontrado.");
+
+            if (!user.VerifyPassword(dto.Password))
+                throw new InvalidOperationException("Senha inválida.");
+
+            if(user.VerifyPassword(dto.NewPassword))
+                throw new InvalidOperationException("A nova senha não pode ser igual a senha atual.");
+
+            var password = new Password(dto.NewPassword);
+            user.ChangePassword(password);
+
+            await _unitOfWork.BeginTransactionAsync();
+
+            try
+            {
+                await _unitOfWork.Users.UpdateAsync(user);
+                await _unitOfWork.CommitAsync();
+            }
+            catch (Exception ex)
+            {
+                await _unitOfWork.RollbackAsync();
+                throw new ApplicationException("Ocorre um erro ao alterar a senha.", ex);
+            }
         }
 
-        public Task<IEnumerable<UserDto>> GetUsers(UserSignature signature)
+        public async Task DeleteUser(DeleteUserDto dto)
         {
-            throw new NotImplementedException();
-        }
+            var user = await _unitOfWork.Users.GetByIdAsync(_currentUser.UserId);
+            if (user is null)
+                throw new InvalidOperationException("Usuário não encontrado.");
 
-        public Task UpdateUser(UserSignature signature)
-        {
-            throw new NotImplementedException();
+            if (!user.VerifyPassword(dto.Password))
+                throw new InvalidOperationException("Senha inválida.");
+
+            await _unitOfWork.BeginTransactionAsync();
+
+            try
+            {
+                await _unitOfWork.Users.DeleteAsync(user);
+                await _unitOfWork.CommitAsync();
+            }
+            catch (Exception ex)
+            {
+                await _unitOfWork.RollbackAsync();
+                throw new ApplicationException("Ocorre um erro ao deletar o usuário.", ex);
+            }
         }
 
         #region PrivatedMethods

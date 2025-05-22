@@ -1,5 +1,5 @@
-﻿using Application.DTOs.Auth.Signature;
-using Application.Interfaces;
+﻿using Application.Contracts;
+using Application.DTOs.Auth.Signature;
 using Core.Interfaces.Repository;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
@@ -7,13 +7,13 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 
-namespace Application.Services;
-public class AuthAppService : IAuthAppService
+namespace Infrastructure.Authentication;
+public class AuthService : IAuthService
 {
     private readonly IConfiguration _configuration;
     private readonly IUserRepository _userRepository;
 
-    public AuthAppService(IConfiguration configuration, IUserRepository userRepository)
+    public AuthService(IConfiguration configuration, IUserRepository userRepository)
     {
         _configuration = configuration;
         _userRepository = userRepository;

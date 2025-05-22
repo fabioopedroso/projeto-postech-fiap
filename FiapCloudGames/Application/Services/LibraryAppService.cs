@@ -1,4 +1,5 @@
-﻿using Application.DTOs.Library.Result;
+﻿using Application.Contracts;
+using Application.DTOs.Library.Result;
 using Application.Interfaces;
 using Core.Interfaces.Repository;
 
@@ -6,9 +7,9 @@ namespace Application.Services;
 public class LibraryAppService : ILibraryAppService
 {
     private readonly ILibraryRepository _libraryRepository;
-    private readonly ICurrentUserAppService _currentUser;
+    private readonly ICurrentUseService _currentUser;
 
-    public LibraryAppService(ILibraryRepository libraryRepository, ICurrentUserAppService currentUser)
+    public LibraryAppService(ILibraryRepository libraryRepository, ICurrentUseService currentUser)
     {
         _libraryRepository = libraryRepository;
         _currentUser = currentUser;

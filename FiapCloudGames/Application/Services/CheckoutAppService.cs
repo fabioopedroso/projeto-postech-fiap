@@ -1,4 +1,5 @@
-﻿using Application.DTOs.Cart.Shared;
+﻿using Application.Contracts;
+using Application.DTOs.Cart.Shared;
 using Application.DTOs.Checkout.Result;
 using Application.Interfaces;
 using Core.Interfaces.Repository;
@@ -7,9 +8,9 @@ namespace Application.Services;
 public class CheckoutAppService : ICheckoutAppService
 {
     private readonly IUnitOfWork _unitOfWork;
-    private readonly ICurrentUserAppService _currentUserAppService;
+    private readonly ICurrentUseService _currentUserAppService;
 
-    public CheckoutAppService(IUnitOfWork unitOfWork, ICurrentUserAppService currentUserAppService)
+    public CheckoutAppService(IUnitOfWork unitOfWork, ICurrentUseService currentUserAppService)
     {
         _unitOfWork = unitOfWork;
         _currentUserAppService = currentUserAppService;

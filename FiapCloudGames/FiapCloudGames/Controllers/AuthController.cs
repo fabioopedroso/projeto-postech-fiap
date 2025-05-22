@@ -1,5 +1,5 @@
-﻿using Application.DTOs.Auth.Signature;
-using Application.Interfaces;
+﻿using Application.Contracts;
+using Application.DTOs.Auth.Signature;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FiapCloudGamesApi.Controllers;
@@ -8,9 +8,9 @@ namespace FiapCloudGamesApi.Controllers;
 [Route("api/[controller]")]
 public class AuthController : ControllerBase
 {
-    private readonly IAuthAppService _authAppService;
+    private readonly IAuthService _authAppService;
 
-    public AuthController(IAuthAppService authAppService)
+    public AuthController(IAuthService authAppService)
     {
         _authAppService = authAppService;
     }
