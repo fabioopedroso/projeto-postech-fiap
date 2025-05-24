@@ -26,11 +26,8 @@ public class Password
         return new Password(hashedPassword, true);
     }
 
-    public bool Verify(string plainTextPassword)
-    {
-        var result = _hasher.VerifyHashedPassword(null, Hashed, plainTextPassword);
-        return result == PasswordVerificationResult.Success;
-    }
+    public PasswordVerificationResult Verify(string plainTextPassword)
+        => _hasher.VerifyHashedPassword(null, Hashed, plainTextPassword);
 
     private static bool IsValid(string password)
     {

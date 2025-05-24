@@ -1,6 +1,8 @@
 ﻿using Application.Contracts;
 using Application.DTOs.Auth.Signature;
 using Core.Interfaces.Repository;
+using Core.ValueObjects;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
@@ -31,9 +33,16 @@ public class AuthService : IAuthService
     #region PrivateMethods
     private async Task<User> GetValidatedUserAsync(LoginDto login)
     {
+        var user = await ValidateUserAsync(login);
+        await UpdatePasswordIfNeededAsync(user, login.Password);
+        return user;
+    }
+
+    private async Task<User> ValidateUserAsync(LoginDto login)
+    {
         var user = await _userRepository.GetByUserNameAsync(login.UserName);
 
-        if (user is null)
+        if (user == null)
             throw new InvalidOperationException("O usuário não foi encontrado.");
 
         if (!user.IsActive)
@@ -43,6 +52,16 @@ public class AuthService : IAuthService
             throw new InvalidOperationException("Usuário ou senha inválidos.");
 
         return user;
+    }
+
+    private async Task UpdatePasswordIfNeededAsync(User user, string password)
+    {
+        var passwordVerificationResult = user.GetPasswordVerificationResult(password);
+        if (passwordVerificationResult == PasswordVerificationResult.SuccessRehashNeeded)
+        {
+            user.ForceChangePassword(new Password(password));
+            await _userRepository.UpdateAsync(user);
+        }
     }
 
     private IEnumerable<Claim> GenerateClaims(User user)

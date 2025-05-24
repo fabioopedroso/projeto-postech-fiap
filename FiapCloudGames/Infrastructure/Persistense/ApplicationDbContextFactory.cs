@@ -11,7 +11,7 @@ public class ApplicationDbContextFactory : IDesignTimeDbContextFactory<Applicati
 
         var configuration = new ConfigurationBuilder()
             .SetBasePath(Directory.GetParent(Directory.GetCurrentDirectory()).FullName)
-            .AddJsonFile("FiapCloudGames\\appsettings.json")
+            .AddJsonFile("FiapCloudGames\\appsettings.json", optional: true)
             .Build();
 
         var connectionString = configuration.GetConnectionString("ConnectionString");

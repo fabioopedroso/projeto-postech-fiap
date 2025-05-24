@@ -2,6 +2,7 @@
 using Core.Entity.Base;
 using Core.Enums;
 using Core.ValueObjects;
+using Microsoft.AspNetCore.Identity;
 
 public class User : EntityBase
 {
@@ -25,10 +26,30 @@ public class User : EntityBase
 
     public bool VerifyPassword(string plainTextPassword)
     {
-        return Password.Verify(plainTextPassword);
+        var result = GetPasswordVerificationResult(plainTextPassword);
+        return !result.Equals(PasswordVerificationResult.Failed);
     }
 
-    public void ChangePassword(Password password)
+    public void ChangePassword(string currentPassword, string newPassword)
+    {
+        if (!GetPasswordVerificationResult(currentPassword).Equals(PasswordVerificationResult.Success))
+            throw new InvalidOperationException("Senha inválida.");
+
+        if (GetPasswordVerificationResult(newPassword).Equals(PasswordVerificationResult.Success))
+            throw new InvalidOperationException("A nova senha não pode ser igual a senha atual.");
+
+        UpdatePassword(new Password(newPassword));
+    }
+
+    public void ForceChangePassword(Password password)
+    {
+        UpdatePassword(password);
+    }
+
+    public PasswordVerificationResult GetPasswordVerificationResult(string plainTextPassword)
+        => Password.Verify(plainTextPassword);
+
+    private void UpdatePassword(Password password)
     {
         Password = password;
     }

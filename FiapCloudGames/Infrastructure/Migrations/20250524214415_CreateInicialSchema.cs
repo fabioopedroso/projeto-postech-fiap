@@ -4,10 +4,12 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
+#pragma warning disable CA1814 // Prefer jagged arrays over multidimensional
+
 namespace Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class CreateInitialSchema : Migration
+    public partial class CreateInicialSchema : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -116,8 +118,7 @@ namespace Infrastructure.Migrations
                 {
                     Id = table.Column<int>(type: "INT", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    UserId = table.Column<int>(type: "INT", nullable: false),
-                    GameId = table.Column<int>(type: "INT", nullable: false)
+                    UserId = table.Column<int>(type: "INT", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -178,6 +179,23 @@ namespace Infrastructure.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.InsertData(
+                table: "Game",
+                columns: new[] { "Id", "CreationDate", "Description", "Genre", "IsActive", "Name", "Price" },
+                values: new object[,]
+                {
+                    { 1, new DateTime(2025, 5, 24, 18, 44, 15, 422, DateTimeKind.Local).AddTicks(4905), "A vast action RPG world", "RPG", true, "Elden Ring", 299.99m },
+                    { 2, new DateTime(2025, 5, 24, 18, 44, 15, 422, DateTimeKind.Local).AddTicks(4907), "Farming and life simulator", "Simulation", true, "Stardew Valley", 39.99m },
+                    { 3, new DateTime(2025, 5, 24, 18, 44, 15, 422, DateTimeKind.Local).AddTicks(4909), "Roguelike action-packed dungeon crawler", "Action", true, "Hades", 79.99m },
+                    { 4, new DateTime(2025, 5, 24, 18, 44, 15, 422, DateTimeKind.Local).AddTicks(4910), "Challenging platformer with a touching story", "Platformer", true, "Celeste", 49.99m },
+                    { 5, new DateTime(2025, 5, 24, 18, 44, 15, 422, DateTimeKind.Local).AddTicks(4912), "Open-world fantasy RPG with deep narrative", "RPG", true, "The Witcher 3", 119.99m }
+                });
+
+            migrationBuilder.InsertData(
+                table: "User",
+                columns: new[] { "Id", "CreationDate", "Email", "IsActive", "Password", "UserName", "UserType" },
+                values: new object[] { -1, new DateTime(2025, 5, 24, 18, 44, 15, 422, DateTimeKind.Local).AddTicks(4774), "admin@admin.com.br", true, "AQAAAAEAACcQAAAAECeoJ4RUQe9tBkQjHXoUorXRaMWvJoHLp4gG/h5vvxuRNQtLULdIp5NC0tFn5/e14w==", "admin", 1 });
+
             migrationBuilder.CreateIndex(
                 name: "IX_Cart_UserId",
                 table: "Cart",
@@ -204,6 +222,18 @@ namespace Infrastructure.Migrations
                 name: "IX_LibraryGame_LibrariesId",
                 table: "LibraryGame",
                 column: "LibrariesId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_User_Email",
+                table: "User",
+                column: "Email",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_User_UserName",
+                table: "User",
+                column: "UserName",
+                unique: true);
         }
 
         /// <inheritdoc />

@@ -48,27 +48,9 @@ namespace Application.Services
             if (user is null)
                 throw new InvalidOperationException("Usuário não encontrado.");
 
-            if (!user.VerifyPassword(dto.Password))
-                throw new InvalidOperationException("Senha inválida.");
+            user.ChangePassword(dto.Password, dto.NewPassword);
 
-            if(user.VerifyPassword(dto.NewPassword))
-                throw new InvalidOperationException("A nova senha não pode ser igual a senha atual.");
-
-            var password = new Password(dto.NewPassword);
-            user.ChangePassword(password);
-
-            await _unitOfWork.BeginTransactionAsync();
-
-            try
-            {
-                await _unitOfWork.Users.UpdateAsync(user);
-                await _unitOfWork.CommitAsync();
-            }
-            catch (Exception ex)
-            {
-                await _unitOfWork.RollbackAsync();
-                throw new ApplicationException("Ocorre um erro ao alterar a senha.", ex);
-            }
+            await _unitOfWork.Users.UpdateAsync(user);
         }
 
         public async Task DeleteUser(DeleteUserDto dto)
@@ -80,18 +62,7 @@ namespace Application.Services
             if (!user.VerifyPassword(dto.Password))
                 throw new InvalidOperationException("Senha inválida.");
 
-            await _unitOfWork.BeginTransactionAsync();
-
-            try
-            {
-                await _unitOfWork.Users.DeleteAsync(user);
-                await _unitOfWork.CommitAsync();
-            }
-            catch (Exception ex)
-            {
-                await _unitOfWork.RollbackAsync();
-                throw new ApplicationException("Ocorre um erro ao deletar o usuário.", ex);
-            }
+            await _unitOfWork.Users.DeleteAsync(user);
         }
 
         #region PrivatedMethods
@@ -121,6 +92,8 @@ namespace Application.Services
             await _unitOfWork.Libraries.CreateAsync(new Library { UserId = user.Id });
             await _unitOfWork.Carts.CreateAsync(new Cart { UserId = user.Id });
         }
+
+
         #endregion
     }
 }

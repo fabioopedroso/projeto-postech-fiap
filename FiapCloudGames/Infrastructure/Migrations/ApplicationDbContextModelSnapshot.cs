@@ -88,6 +88,58 @@ namespace Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Game", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            CreationDate = new DateTime(2025, 5, 24, 18, 44, 15, 422, DateTimeKind.Local).AddTicks(4905),
+                            Description = "A vast action RPG world",
+                            Genre = "RPG",
+                            IsActive = true,
+                            Name = "Elden Ring",
+                            Price = 299.99m
+                        },
+                        new
+                        {
+                            Id = 2,
+                            CreationDate = new DateTime(2025, 5, 24, 18, 44, 15, 422, DateTimeKind.Local).AddTicks(4907),
+                            Description = "Farming and life simulator",
+                            Genre = "Simulation",
+                            IsActive = true,
+                            Name = "Stardew Valley",
+                            Price = 39.99m
+                        },
+                        new
+                        {
+                            Id = 3,
+                            CreationDate = new DateTime(2025, 5, 24, 18, 44, 15, 422, DateTimeKind.Local).AddTicks(4909),
+                            Description = "Roguelike action-packed dungeon crawler",
+                            Genre = "Action",
+                            IsActive = true,
+                            Name = "Hades",
+                            Price = 79.99m
+                        },
+                        new
+                        {
+                            Id = 4,
+                            CreationDate = new DateTime(2025, 5, 24, 18, 44, 15, 422, DateTimeKind.Local).AddTicks(4910),
+                            Description = "Challenging platformer with a touching story",
+                            Genre = "Platformer",
+                            IsActive = true,
+                            Name = "Celeste",
+                            Price = 49.99m
+                        },
+                        new
+                        {
+                            Id = 5,
+                            CreationDate = new DateTime(2025, 5, 24, 18, 44, 15, 422, DateTimeKind.Local).AddTicks(4912),
+                            Description = "Open-world fantasy RPG with deep narrative",
+                            Genre = "RPG",
+                            IsActive = true,
+                            Name = "The Witcher 3",
+                            Price = 119.99m
+                        });
                 });
 
             modelBuilder.Entity("Core.Entity.Library", b =>
@@ -145,40 +197,6 @@ namespace Infrastructure.Migrations
                     b.ToTable("Sale", (string)null);
                 });
 
-            modelBuilder.Entity("Core.Entity.User", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INT");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTime>("CreationDate")
-                        .HasColumnType("TIMESTAMP");
-
-                    b.Property<string>("Email")
-                        .IsRequired()
-                        .HasColumnType("VARCHAR(254)");
-
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("BOOLEAN");
-
-                    b.Property<string>("Password")
-                        .IsRequired()
-                        .HasColumnType("VARCHAR(255)");
-
-                    b.Property<string>("UserName")
-                        .IsRequired()
-                        .HasColumnType("VARCHAR(100)");
-
-                    b.Property<int>("UserType")
-                        .HasColumnType("INT");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("User", (string)null);
-                });
-
             modelBuilder.Entity("GameLibrary", b =>
                 {
                     b.Property<int>("GamesId")
@@ -209,6 +227,58 @@ namespace Infrastructure.Migrations
                     b.ToTable("GameSale", (string)null);
                 });
 
+            modelBuilder.Entity("User", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INT");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreationDate")
+                        .HasColumnType("TIMESTAMP");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("VARCHAR(254)");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("BOOLEAN");
+
+                    b.Property<string>("Password")
+                        .IsRequired()
+                        .HasColumnType("VARCHAR(255)");
+
+                    b.Property<string>("UserName")
+                        .IsRequired()
+                        .HasColumnType("VARCHAR(100)");
+
+                    b.Property<int>("UserType")
+                        .HasColumnType("INT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Email")
+                        .IsUnique();
+
+                    b.HasIndex("UserName")
+                        .IsUnique();
+
+                    b.ToTable("User", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = -1,
+                            CreationDate = new DateTime(2025, 5, 24, 18, 44, 15, 422, DateTimeKind.Local).AddTicks(4774),
+                            Email = "admin@admin.com.br",
+                            IsActive = true,
+                            Password = "AQAAAAEAACcQAAAAECeoJ4RUQe9tBkQjHXoUorXRaMWvJoHLp4gG/h5vvxuRNQtLULdIp5NC0tFn5/e14w==",
+                            UserName = "admin",
+                            UserType = 1
+                        });
+                });
+
             modelBuilder.Entity("CartGame", b =>
                 {
                     b.HasOne("Core.Entity.Cart", null)
@@ -226,7 +296,7 @@ namespace Infrastructure.Migrations
 
             modelBuilder.Entity("Core.Entity.Cart", b =>
                 {
-                    b.HasOne("Core.Entity.User", "User")
+                    b.HasOne("User", "User")
                         .WithOne("Cart")
                         .HasForeignKey("Core.Entity.Cart", "UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -237,7 +307,7 @@ namespace Infrastructure.Migrations
 
             modelBuilder.Entity("Core.Entity.Library", b =>
                 {
-                    b.HasOne("Core.Entity.User", "User")
+                    b.HasOne("User", "User")
                         .WithOne("Library")
                         .HasForeignKey("Core.Entity.Library", "UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -276,7 +346,7 @@ namespace Infrastructure.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Core.Entity.User", b =>
+            modelBuilder.Entity("User", b =>
                 {
                     b.Navigation("Cart")
                         .IsRequired();
