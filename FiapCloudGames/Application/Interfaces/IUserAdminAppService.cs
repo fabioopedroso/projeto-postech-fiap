@@ -7,6 +7,7 @@ public interface IUserAdminAppService
     Task CreateUser(CreateUserDto signature);
     Task SetUserActiveStatus(SetUserActiveStatusDto signature);
     Task<IEnumerable<UserDto>> GetUsers();
-    Task AssignRole(RoleDto signature);
-    Task RemoveRole(RoleDto signature);
+    Task<UserDto> GetUserById(int id);
+    Task PromoteUser(int userId);
+    Task DemoteUser(int userId);
 }

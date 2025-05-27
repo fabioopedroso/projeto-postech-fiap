@@ -10,7 +10,6 @@ public class User : EntityBase
     public Email Email { get; private set; }
     public Password Password { get; private set; }
     public UserType UserType { get; private set; }
-
     public Library Library { get; set; }
     public Cart Cart { get; set; }
 
@@ -48,6 +47,11 @@ public class User : EntityBase
 
     public PasswordVerificationResult GetPasswordVerificationResult(string plainTextPassword)
         => Password.Verify(plainTextPassword);
+
+    public void SetUserType(UserType userType)
+    {
+        UserType = userType;
+    }
 
     private void UpdatePassword(Password password)
     {

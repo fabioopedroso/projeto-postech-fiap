@@ -21,12 +21,17 @@ namespace Infrastructure.Repository
             ApplicationDbContext context,
             IUserRepository userRepository,
             ILibraryRepository libraryRepository,
-            ICartRepository cartRepository)
+            ICartRepository cartRepository,
+            IGameRepository gameRepository,
+            ISaleRepository saleRepository
+            )
         {
             _context = context;
             Users = userRepository;
             Libraries = libraryRepository;
             Carts = cartRepository;
+            Games = gameRepository;
+            Sales = saleRepository;
         }
 
         public async Task BeginTransactionAsync()

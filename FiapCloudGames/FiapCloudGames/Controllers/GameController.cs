@@ -7,7 +7,7 @@ namespace FiapCloudGamesApi.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-[Authorize(Roles = "Administrator")]
+//[Authorize(Roles = "Administrator")]
 
 public class GameController : ControllerBase
 {
@@ -19,6 +19,7 @@ public class GameController : ControllerBase
     }
 
     [HttpGet]
+    [Authorize(Roles = "Administrator,CommonUser")]
     public async Task<IActionResult> GetAll()
     {
         var result = await _gameAppService.GetAllAsync();
@@ -26,6 +27,7 @@ public class GameController : ControllerBase
     }
 
     [HttpGet("{id:int}")]
+    [Authorize(Roles = "Administrator,CommonUser")]
     public async Task<IActionResult> GetById(int id)
     {
         var result = await _gameAppService.GetByIdAsync(id);
@@ -33,6 +35,7 @@ public class GameController : ControllerBase
     }
 
     [HttpPost]
+    [Authorize(Roles = "Administrator")]
     public async Task<IActionResult> Add([FromBody] AddGameDto dto)
     {
         var result = await _gameAppService.AddAsync(dto);
@@ -40,6 +43,7 @@ public class GameController : ControllerBase
     }
 
     [HttpPut("{id:int}")]
+    [Authorize(Roles = "Administrator")]
     public async Task<IActionResult> Update([FromRoute] int id, [FromBody] UpdateGameDto dto)
     {
         dto.Id = id;
@@ -48,6 +52,7 @@ public class GameController : ControllerBase
     }
 
     [HttpPatch("SetActiveStatus")]
+    [Authorize(Roles = "Administrator")]
     public async Task<IActionResult> SetActiveStatus([FromBody] SetActiveStatusDto dto)
     {
         await _gameAppService.SetActiveStatusAsync(dto);
@@ -55,6 +60,7 @@ public class GameController : ControllerBase
     }
 
     [HttpPatch("SetPrice")]
+    [Authorize(Roles = "Administrator")]
     public async Task<IActionResult> SetPrice([FromBody] SetPriceDto dto)
     {
         await _gameAppService.SetPriceAsync(dto);

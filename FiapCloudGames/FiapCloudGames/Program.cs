@@ -1,5 +1,6 @@
-using Infrastructure.IoC;
+using API.Middlewares;
 using FiapCloudGamesApi.Middlewares;
+using Infrastructure.IoC;
 using Infrastructure.Persistense;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
@@ -83,6 +84,7 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseMiddleware<ValidateUserExistsMiddleware>();
+app.UseMiddleware<ExceptionMiddleware>();
 app.UseAuthorization();
 app.MapControllers();
 
