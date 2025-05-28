@@ -65,6 +65,7 @@ builder.Services.AddAuthentication(x =>
         };
     });
 
+builder.Services.AddMemoryCache();
 builder.Services.RegisterServices(builder.Configuration);
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>

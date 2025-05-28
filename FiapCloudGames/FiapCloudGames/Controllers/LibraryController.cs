@@ -1,6 +1,8 @@
 ﻿using Application.Interfaces;
+using Application.Interfaces.Cache;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Caching.Memory;
 
 namespace FiapCloudGamesApi.Controllers;
 
@@ -10,16 +12,17 @@ namespace FiapCloudGamesApi.Controllers;
 
 public class LibraryController : ControllerBase
 {
-    private readonly ILibraryAppService _libraryAppService;
-    public LibraryController(ILibraryAppService libraryAppService)
+    private readonly ILibraryCacheService _libraryCacheService;
+
+    public LibraryController(ILibraryCacheService libraryCacheService)
     {
-        _libraryAppService = libraryAppService;
+        _libraryCacheService = libraryCacheService;
     }
 
     [HttpGet("ListLibraryGames")]
     public async Task<IActionResult> ListLibraryGames()
     {
-        var games = await _libraryAppService.ListLibraryGamesAsync();
+        var games = await _libraryCacheService.GetCachedLibraryGamesAsync();
         return Ok(games);
     }
 }

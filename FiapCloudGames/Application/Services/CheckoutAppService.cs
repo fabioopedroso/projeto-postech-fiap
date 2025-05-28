@@ -2,6 +2,7 @@
 using Application.DTOs.Cart.Shared;
 using Application.DTOs.Checkout.Result;
 using Application.Interfaces;
+using Application.Interfaces.Cache;
 using Core.Interfaces.Repository;
 
 namespace Application.Services;
@@ -9,11 +10,13 @@ public class CheckoutAppService : ICheckoutAppService
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly ICurrentUseService _currentUserAppService;
+    private readonly ILibraryCacheService _libraryCacheService;
 
-    public CheckoutAppService(IUnitOfWork unitOfWork, ICurrentUseService currentUserAppService)
+    public CheckoutAppService(IUnitOfWork unitOfWork, ICurrentUseService currentUserAppService, ILibraryCacheService libraryCacheService)
     {
         _unitOfWork = unitOfWork;
         _currentUserAppService = currentUserAppService;
+        _libraryCacheService = libraryCacheService;
     }
 
     public async Task<OrderResultDto> CheckoutCart()
@@ -35,7 +38,9 @@ public class CheckoutAppService : ICheckoutAppService
             await _unitOfWork.Carts.ClearCartAsync(userId);
 
             await _unitOfWork.CommitAsync();
-            
+
+            _libraryCacheService.InvalidateLibraryGamesCache(userId);
+
             return new OrderResultDto
             {
                 UserId = userId,
