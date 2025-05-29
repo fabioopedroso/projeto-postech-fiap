@@ -1,6 +1,7 @@
 ﻿using Application.DTOs.Game.Result;
 using Application.DTOs.Game.Signature;
 using Application.Interfaces;
+using Application.Interfaces.Cache;
 using Core.Entity;
 using Core.Interfaces.Repository;
 
@@ -8,10 +9,12 @@ namespace Application.Services;
 public class GameAppService : IGameAppService
 {
     private readonly IGameRepository _gameRepository;
+    private readonly IGameCacheService _gameCacheService;
 
-    public GameAppService(IGameRepository gameRepository)
+    public GameAppService(IGameRepository gameRepository, IGameCacheService gameCacheService)
     {
         _gameRepository = gameRepository;
+        _gameCacheService = gameCacheService;
     }
 
     public async Task<GameDto> AddAsync(AddGameDto dto)
@@ -25,6 +28,7 @@ public class GameAppService : IGameAppService
         };
 
         var result = await _gameRepository.CreateAsync(game);
+        _gameCacheService.InvalidateGamesCache();
 
         return new GameDto()
         {
@@ -75,6 +79,9 @@ public class GameAppService : IGameAppService
         var game = await _gameRepository.GetByIdAsync(dto.Id);
         game.IsActive = dto.IsActive;
         await _gameRepository.UpdateAsync(game);
+
+        _gameCacheService.InvalidateGamesCache();
+        _gameCacheService.InvalidateGameCache(dto.Id);
     }
 
     public async Task UpdateAsync(UpdateGameDto dto)
@@ -87,6 +94,9 @@ public class GameAppService : IGameAppService
         game.Price = dto.Price;
 
         await _gameRepository.UpdateAsync(game);
+
+        _gameCacheService.InvalidateGamesCache();
+        _gameCacheService.InvalidateGameCache(dto.Id);
     }
 
     public async Task SetPriceAsync(SetPriceDto dto)
@@ -94,5 +104,8 @@ public class GameAppService : IGameAppService
         var game = await _gameRepository.GetByIdAsync(dto.Id);
         game.Price = dto.Price;
         await _gameRepository.UpdateAsync(game);
+
+        _gameCacheService.InvalidateGamesCache();
+        _gameCacheService.InvalidateGameCache(dto.Id);
     }
 }

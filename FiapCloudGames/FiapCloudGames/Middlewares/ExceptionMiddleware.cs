@@ -2,72 +2,74 @@
 using System.Net;
 using System.Text.Json;
 
-namespace API.Middlewares
+namespace API.Middlewares;
+
+public class ExceptionMiddleware
 {
-    public class ExceptionMiddleware
+    private readonly RequestDelegate _next;
+    private readonly ILogger<ExceptionMiddleware> _logger;
+
+    public ExceptionMiddleware(RequestDelegate next, ILogger<ExceptionMiddleware> logger)
     {
-        private readonly RequestDelegate _next;
-        private readonly ILogger<ExceptionMiddleware> _logger;
+        _next = next;
+        _logger = logger;
+    }
 
-        public ExceptionMiddleware(RequestDelegate next, ILogger<ExceptionMiddleware> logger)
+    public async Task InvokeAsync(HttpContext context)
+    {
+        try
         {
-            _next = next;
-            _logger = logger;
+            await _next(context);
         }
-
-        public async Task InvokeAsync(HttpContext context)
+        catch (Exception ex)
         {
-            try
-            {
-                await _next(context);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Unhandled exception occurred: {Message}", ex.Message);
-                await HandleExceptionAsync(context, ex);
-            }
-        }
-
-        private static async Task HandleExceptionAsync(HttpContext context, Exception exception)
-        {
-            context.Response.ContentType = "application/problem+json";
-
-            var statusCode = exception switch
-            {
-                NotFoundException => (int)HttpStatusCode.NotFound,
-                ConflictException => (int)HttpStatusCode.Conflict,
-                ValidationException => (int)HttpStatusCode.BadRequest,
-                BusinessException => (int)HttpStatusCode.BadRequest,
-                UnauthorizedException => (int)HttpStatusCode.Unauthorized,
-                _ => (int)HttpStatusCode.InternalServerError
-            };
-
-            var problem = new
-            {
-                type = $"https://httpstatuses.com/{statusCode}",
-                title = GetTitleForStatusCode(statusCode),
-                status = statusCode,
-                detail = exception.Message,
-                instance = context.Request.Path
-            };
-
-            context.Response.StatusCode = statusCode;
-
-            var result = JsonSerializer.Serialize(problem);
-            await context.Response.WriteAsync(result);
-        }
-
-        private static string GetTitleForStatusCode(int statusCode)
-        {
-            return statusCode switch
-            {
-                400 => "Bad Request",
-                401 => "Unauthorized",
-                404 => "Not Found",
-                409 => "Conflict",
-                500 => "Internal Server Error",
-                _ => "An error occurred"
-            };
+            LogException(ex);
+            await WriteProblemResponseAsync(context, ex);
         }
     }
+
+    private void LogException(Exception ex)
+    {
+        _logger.LogError(ex, "Unhandled exception occurred | Message: {Message}", ex.Message);
+    }
+
+    private async Task WriteProblemResponseAsync(HttpContext context, Exception exception)
+    {
+        context.Response.ContentType = "application/problem+json";
+        context.Response.StatusCode = GetStatusCode(exception);
+
+        var problemDetails = BuildProblemDetails(context, exception, context.Response.StatusCode);
+
+        var json = JsonSerializer.Serialize(problemDetails);
+        await context.Response.WriteAsync(json);
+    }
+
+    private int GetStatusCode(Exception exception) => exception switch
+    {
+        NotFoundException => StatusCodes.Status404NotFound,
+        ConflictException => StatusCodes.Status409Conflict,
+        ValidationException => StatusCodes.Status400BadRequest,
+        BusinessException => StatusCodes.Status400BadRequest,
+        UnauthorizedException => StatusCodes.Status401Unauthorized,
+        _ => StatusCodes.Status500InternalServerError
+    };
+
+    private object BuildProblemDetails(HttpContext context, Exception exception, int statusCode) => new
+    {
+        type = $"https://httpstatuses.com/{statusCode}",
+        title = GetTitleForStatusCode(statusCode),
+        status = statusCode,
+        detail = exception.Message,
+        instance = context.Request.Path
+    };
+
+    private string GetTitleForStatusCode(int statusCode) => statusCode switch
+    {
+        StatusCodes.Status400BadRequest => "Bad Request",
+        StatusCodes.Status401Unauthorized => "Unauthorized",
+        StatusCodes.Status404NotFound => "Not Found",
+        StatusCodes.Status409Conflict => "Conflict",
+        StatusCodes.Status500InternalServerError => "Internal Server Error",
+        _ => "An error occurred"
+    };
 }

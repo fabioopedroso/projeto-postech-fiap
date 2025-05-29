@@ -21,11 +21,27 @@ namespace FiapCloudGamesApi.Middlewares
 
         public async Task InvokeAsync(HttpContext context)
         {
+            var correlationId = GetOrCreateCorrelationId(context);
+            AddCorrelationIdToResponse(context, correlationId);
+
+            using (CreateLogScope(correlationId))
+            {
+                await LogAndExecuteRequestAsync(context, correlationId);
+            }
+        }
+
+        private string GetOrCreateCorrelationId(HttpContext context)
+        {
             if (!context.Request.Headers.TryGetValue(CorrelationIdHeader, out var correlationId))
             {
                 correlationId = Guid.NewGuid().ToString();
             }
 
+            return correlationId;
+        }
+
+        private void AddCorrelationIdToResponse(HttpContext context, string correlationId)
+        {
             context.Response.OnStarting(() =>
             {
                 if (!context.Response.Headers.ContainsKey(CorrelationIdHeader))
@@ -34,34 +50,42 @@ namespace FiapCloudGamesApi.Middlewares
                 }
                 return Task.CompletedTask;
             });
+        }
 
-            using (LogContext.PushProperty("CorrelationId", correlationId))
-            using (_logger.BeginScope("{CorrelationId}: {CorrelationIdValue}", correlationId, correlationId))
+        private IDisposable CreateLogScope(string correlationId)
+        {
+            LogContext.PushProperty("CorrelationId", correlationId);
+            return _logger.BeginScope("{CorrelationId}: {CorrelationIdValue}", correlationId, correlationId);
+        }
+
+        private async Task LogAndExecuteRequestAsync(HttpContext context, string correlationId)
+        {
+            var stopwatch = Stopwatch.StartNew();
+
+            try
             {
-                var stopwatch = Stopwatch.StartNew();
+                _logger.LogInformation("Request started: {Method} {Path}", context.Request.Method, context.Request.Path);
 
-                try
-                {
-                    _logger.LogInformation("Request started: {Method} {Path}", context.Request.Method, context.Request.Path);
+                await _next(context);
 
-                    await _next(context);
-
-                    stopwatch.Stop();
-                    _logger.LogInformation("Request finished: {Method} {Path} responded {StatusCode} in {ElapsedMilliseconds}ms",
-                        context.Request.Method,
-                        context.Request.Path,
-                        context.Response.StatusCode,
-                        stopwatch.ElapsedMilliseconds);
-                }
-                catch (Exception ex)
-                {
-                    stopwatch.Stop();
-                    _logger.LogError(ex, "Request failed: {Method} {Path} after {ElapsedMilliseconds}ms",
-                        context.Request.Method,
-                        context.Request.Path,
-                        stopwatch.ElapsedMilliseconds);
-                    throw;
-                }
+                stopwatch.Stop();
+                _logger.LogInformation(
+                    "Request finished: {Method} {Path} responded {StatusCode} in {ElapsedMilliseconds}ms",
+                    context.Request.Method,
+                    context.Request.Path,
+                    context.Response.StatusCode,
+                    stopwatch.ElapsedMilliseconds);
+            }
+            catch (Exception ex)
+            {
+                stopwatch.Stop();
+                _logger.LogError(
+                    ex,
+                    "Request failed: {Method} {Path} after {ElapsedMilliseconds}ms",
+                    context.Request.Method,
+                    context.Request.Path,
+                    stopwatch.ElapsedMilliseconds);
+                throw;
             }
         }
     }

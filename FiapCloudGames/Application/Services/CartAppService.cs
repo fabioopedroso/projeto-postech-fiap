@@ -2,6 +2,7 @@
 using Application.DTOs.Cart.Result;
 using Application.DTOs.Cart.Shared;
 using Application.Interfaces;
+using Application.Interfaces.Cache;
 using Core.Interfaces.Repository;
 
 namespace Application.Services;
@@ -9,11 +10,13 @@ public class CartAppService : ICartAppService
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly ICurrentUseService _currentUserAppService;
+    private readonly ICartCacheService _cartCacheService;
 
-    public CartAppService(IUnitOfWork unitOfWork, ICurrentUseService currentUserAppService)
+    public CartAppService(IUnitOfWork unitOfWork, ICurrentUseService currentUserAppService, ICartCacheService cartCacheService)
     {
         _unitOfWork = unitOfWork;
         _currentUserAppService = currentUserAppService;
+        _cartCacheService = cartCacheService;
     }
 
     public async Task AddGame(int gameId)
@@ -24,6 +27,8 @@ public class CartAppService : ICartAppService
 
         await _unitOfWork.Carts.AddGameAsync(_currentUserAppService.UserId, game);
         await _unitOfWork.CommitAsync();
+
+        _cartCacheService.InvalidateCartCache(_currentUserAppService.UserId);
     }
     public async Task RemoveGame(int gameId)
     {
@@ -33,11 +38,15 @@ public class CartAppService : ICartAppService
 
         await _unitOfWork.Carts.RemoveGameAsync(_currentUserAppService.UserId, game);
         await _unitOfWork.CommitAsync();
+
+        _cartCacheService.InvalidateCartCache(_currentUserAppService.UserId);
     }
 
     public async Task ClearCart()
     {
         await _unitOfWork.Carts.ClearCartAsync(_currentUserAppService.UserId);
+        
+        _cartCacheService.InvalidateCartCache(_currentUserAppService.UserId);
     }
 
     public async Task<CartSummaryDto> GetCartSummary()

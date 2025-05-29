@@ -13,14 +13,12 @@ namespace FiapCloudGamesApi.Controllers;
 public class CartController : ControllerBase
 {
     private readonly ICartAppService _cartAppService;
-    private readonly ICurrentUseService _currentUserService;
     private readonly ICartCacheService _cartCacheService;
 
-    public CartController(ICartCacheService cartCacheService, ICartAppService cartAppService, ICurrentUseService currentUserService)
+    public CartController(ICartCacheService cartCacheService, ICartAppService cartAppService)
     {
         _cartCacheService = cartCacheService;
         _cartAppService = cartAppService;
-        _currentUserService = currentUserService;
     }
 
     [HttpGet("Summary")]
@@ -55,7 +53,6 @@ public class CartController : ControllerBase
     public async Task<IActionResult> AddGame(int gameId)
     {
         await _cartAppService.AddGame(gameId);
-        _cartCacheService.InvalidateCartCache(_currentUserService.UserId);
         return Ok();
     }
 
@@ -63,7 +60,6 @@ public class CartController : ControllerBase
     public async Task<IActionResult> RemoveGame(int gameId)
     {
         await _cartAppService.RemoveGame(gameId);
-        _cartCacheService.InvalidateCartCache(_currentUserService.UserId);
         return Ok();
     }
 
@@ -71,7 +67,6 @@ public class CartController : ControllerBase
     public async Task<IActionResult> ClearCart()
     {
         await _cartAppService.ClearCart();
-        _cartCacheService.InvalidateCartCache(_currentUserService.UserId);
         return Ok();
     }
 }

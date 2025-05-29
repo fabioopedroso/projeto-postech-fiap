@@ -53,5 +53,8 @@ public static class DependencyInjectionConfig
     private static void AddCacheServices(this IServiceCollection services)
     {
         services.AddScoped<ILibraryCacheService, LibraryCacheService>();
+        services.AddScoped<IGameCacheService, GameCacheService>();
+        services.AddScoped<ICartCacheService, CartCacheService>();
+
     }
 }
