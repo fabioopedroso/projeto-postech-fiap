@@ -1,5 +1,6 @@
 using API.Middlewares;
 using FiapCloudGamesApi.Middlewares;
+using FiapCloudGamesApi.Security;
 using Infrastructure.IoC;
 using Infrastructure.Persistense;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -63,6 +64,9 @@ builder.Services.AddAuthentication(x =>
             ValidAudience = builder.Configuration["Jwt:Audience"],
             IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]))
         };
+
+        options.Events = new CustomJwtBearerEvents();
+
     });
 
 builder.Services.AddMemoryCache();
@@ -83,10 +87,11 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+app.UseMiddleware<ExceptionMiddleware>();
 app.UseAuthentication();
 app.UseMiddleware<ValidateUserExistsMiddleware>();
-app.UseMiddleware<ExceptionMiddleware>();
 app.UseAuthorization();
+app.UseCustomStatusCodePages();
 app.MapControllers();
 
 app.Run();
