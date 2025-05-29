@@ -22,12 +22,15 @@ public class UserAdminAppServiceTests
     }
 
     [Fact]
-    public async Task CreateUser_Should_Call_Register_For_CommonUser()
+    public async Task Given_CommonUser_When_CreateUser_Then_RegisterIsCalled()
     {
+        // Given
         var dto = new CreateUserDto { UserName = "user", Email = "user@email.com", Password = "pass", Role = "user" };
 
+        // When
         await _service.CreateUser(dto);
 
+        // Then
         _userAppServiceMock.Verify(x => x.Register(It.Is<RegisterDto>(r =>
             r.UserName == dto.UserName &&
             r.Email == dto.Email &&
@@ -37,12 +40,15 @@ public class UserAdminAppServiceTests
     }
 
     [Fact]
-    public async Task CreateUser_Should_Create_AdminUser()
+    public async Task Given_AdminUser_When_CreateUser_Then_UserIsCreated()
     {
+        // Given
         var dto = new CreateUserDto { UserName = "admin", Email = "admin@email.com", Password = "pass", Role = "admin" };
 
+        // When
         await _service.CreateUser(dto);
 
+        // Then
         _userRepositoryMock.Verify(x => x.CreateAsync(It.Is<User>(u =>
             u.UserName == dto.UserName &&
             u.Email.Address == dto.Email &&
@@ -52,8 +58,9 @@ public class UserAdminAppServiceTests
     }
 
     [Fact]
-    public async Task GetUsers_Should_Return_UserDtos()
+    public async Task Given_UsersExist_When_GetUsers_Then_ReturnsUserDtos()
     {
+        // Given
         var users = new List<User>
         {
             new User("user1", new Email("a@a.com"), new Password("pass"), UserType.CommonUser),
@@ -61,116 +68,146 @@ public class UserAdminAppServiceTests
         };
         _userRepositoryMock.Setup(x => x.GetAllAsync()).ReturnsAsync(users);
 
+        // When
         var result = await _service.GetUsers();
 
+        // Then
         Assert.Equal(2, result.Count());
         Assert.Contains(result, u => u.UserName == "user1" && u.Email == "a@a.com");
         Assert.Contains(result, u => u.UserName == "user2" && u.Email == "b@b.com");
     }
 
     [Fact]
-    public async Task GetUserById_Should_Return_UserDto()
+    public async Task Given_UserExists_When_GetUserById_Then_ReturnsUserDto()
     {
+        // Given
         var user = new User("user", new Email("a@a.com"), new Password("pass"), UserType.CommonUser);
         typeof(User).GetProperty("Id").SetValue(user, 1);
         _userRepositoryMock.Setup(x => x.GetByIdAsync(1)).ReturnsAsync(user);
 
+        // When
         var result = await _service.GetUserById(1);
 
+        // Then
         Assert.Equal(1, result.Id);
         Assert.Equal("user", result.UserName);
         Assert.Equal("a@a.com", result.Email);
     }
 
     [Fact]
-    public async Task GetUserById_Should_Throw_When_NotFound()
+    public async Task Given_UserDoesNotExist_When_GetUserById_Then_ThrowsNotFoundException()
     {
+        // Given
         _userRepositoryMock.Setup(x => x.GetByIdAsync(1)).ReturnsAsync((User)null);
 
+        // When / Then
         await Assert.ThrowsAsync<NotFoundException>(() => _service.GetUserById(1));
     }
 
     [Fact]
-    public async Task PromoteUser_Should_Set_UserType_Administrator()
+    public async Task Given_UserExists_When_PromoteUser_Then_UserTypeIsAdministrator()
     {
+        // Given
         var user = new User("user", new Email("a@a.com"), new Password("pass"), UserType.CommonUser);
         typeof(User).GetProperty("Id").SetValue(user, 1);
         _userRepositoryMock.Setup(x => x.GetByIdAsync(1)).ReturnsAsync(user);
 
+        // When
         await _service.PromoteUser(1);
 
+        // Then
         Assert.Equal(UserType.Administrator, user.UserType);
         _userRepositoryMock.Verify(x => x.UpdateAsync(user), Times.Once);
     }
 
     [Fact]
-    public async Task PromoteUser_Should_Throw_When_NotFound()
+    public async Task Given_UserDoesNotExist_When_PromoteUser_Then_ThrowsNotFoundException()
     {
+        // Given
         _userRepositoryMock.Setup(x => x.GetByIdAsync(1)).ReturnsAsync((User)null);
 
+        // When / Then
         await Assert.ThrowsAsync<NotFoundException>(() => _service.PromoteUser(1));
     }
 
     [Fact]
-    public async Task DemoteUser_Should_Set_UserType_CommonUser()
+    public async Task Given_UserExists_When_DemoteUser_Then_UserTypeIsCommonUser()
     {
+        // Given
         var user = new User("user", new Email("a@a.com"), new Password("pass"), UserType.Administrator);
         typeof(User).GetProperty("Id").SetValue(user, 1);
         _userRepositoryMock.Setup(x => x.GetByIdAsync(1)).ReturnsAsync(user);
 
+        // When
         await _service.DemoteUser(1);
 
+        // Then
         Assert.Equal(UserType.CommonUser, user.UserType);
         _userRepositoryMock.Verify(x => x.UpdateAsync(user), Times.Once);
     }
 
     [Fact]
-    public async Task DemoteUser_Should_Throw_When_NotFound()
+    public async Task Given_UserDoesNotExist_When_DemoteUser_Then_ThrowsNotFoundException()
     {
+        // Given
         _userRepositoryMock.Setup(x => x.GetByIdAsync(1)).ReturnsAsync((User)null);
 
+        // When / Then
         await Assert.ThrowsAsync<NotFoundException>(() => _service.DemoteUser(1));
     }
 
     [Fact]
-    public async Task SetUserActiveStatus_Should_Update_IsActive()
+    public async Task Given_UserExists_When_SetUserActiveStatus_Then_UpdatesIsActive()
     {
+        // Given
         var user = new User("user", new Email("a@a.com"), new Password("pass"), UserType.CommonUser);
         typeof(User).GetProperty("Id").SetValue(user, 1);
         _userRepositoryMock.Setup(x => x.GetByIdAsync(1)).ReturnsAsync(user);
 
         var dto = new SetUserActiveStatusDto { UserId = 1, IsActive = false };
 
+        // When
         await _service.SetUserActiveStatus(dto);
 
+        // Then
         Assert.False(user.IsActive);
         _userRepositoryMock.Verify(x => x.UpdateAsync(user), Times.Once);
     }
 
     [Fact]
-    public async Task SetUserActiveStatus_Should_Throw_When_NotFound()
+    public async Task Given_UserDoesNotExist_When_SetUserActiveStatus_Then_ThrowsNotFoundException()
     {
+        // Given
         _userRepositoryMock.Setup(x => x.GetByIdAsync(1)).ReturnsAsync((User)null);
 
         var dto = new SetUserActiveStatusDto { UserId = 1, IsActive = false };
 
+        // When / Then
         await Assert.ThrowsAsync<NotFoundException>(() => _service.SetUserActiveStatus(dto));
     }
 
     [Theory]
     [InlineData("admin", UserType.Administrator)]
     [InlineData("user", UserType.CommonUser)]
-    public void ParseUserType_Should_Return_Correct_UserType(string role, UserType expected)
+    public void Given_RoleString_When_ParseUserType_Then_ReturnsCorrectUserType(string role, UserType expected)
     {
+        // Given
         var method = typeof(UserAdminAppService).GetMethod("ParseUserType", BindingFlags.NonPublic | BindingFlags.Instance);
+
+        // When
         var result = method.Invoke(_service, new object[] { role });
+
+        // Then
         Assert.Equal(expected, result);
     }
 
     [Fact]
-    public void ParseUserType_Should_Throw_On_Invalid_Role()
+    public void Given_InvalidRoleString_When_ParseUserType_Then_ThrowsArgumentException()
     {
+        // Given
         var method = typeof(UserAdminAppService).GetMethod("ParseUserType", BindingFlags.NonPublic | BindingFlags.Instance);
+
+        // When / Then
         Assert.Throws<TargetInvocationException>(() => method.Invoke(_service, new object[] { "invalid" }));
     }
 }
