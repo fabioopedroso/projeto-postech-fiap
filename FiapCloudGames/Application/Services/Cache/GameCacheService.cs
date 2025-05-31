@@ -11,12 +11,12 @@ namespace Application.Services.Cache;
 public class GameCacheService : IGameCacheService
 {
     private readonly IMemoryCache _memoryCache;
-    private readonly IGameAppService _gameAppService;
+    private readonly IGameReadOnlyAppService _gameAppService;
 
     private const string GamesCacheKey = "GamesCache";
     private const string GameCacheKeyPrefix = "GameCache_";
 
-    public GameCacheService(IMemoryCache memoryCache, IGameAppService gameAppService)
+    public GameCacheService(IMemoryCache memoryCache, IGameReadOnlyAppService gameAppService)
     {
         _memoryCache = memoryCache;
         _gameAppService = gameAppService;

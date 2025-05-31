@@ -36,6 +36,14 @@ public static class DependencyInjectionConfig
 
     private static void AddAppServices(this IServiceCollection services)
     {
+        services.AddScoped<GameAppService>();
+        services.AddScoped<IGameAppService>(provider => provider.GetRequiredService<GameAppService>());
+        services.AddScoped<IGameReadOnlyAppService>(provider => provider.GetRequiredService<GameAppService>());
+
+        services.AddScoped<CartAppService>();
+        services.AddScoped<ICartAppService>(provider => provider.GetRequiredService<CartAppService>());
+        services.AddScoped<ICartReadOnlyAppService>(provider => provider.GetRequiredService<CartAppService>());
+        
         services.AddScoped<IUserAppService, UserAppService>();
         services.AddScoped<IGameAppService, GameAppService>();
         services.AddScoped<ILibraryAppService, LibraryAppService>();

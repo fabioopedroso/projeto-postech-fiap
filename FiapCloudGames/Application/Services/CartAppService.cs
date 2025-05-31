@@ -6,7 +6,7 @@ using Application.Interfaces.Cache;
 using Core.Interfaces.Repository;
 
 namespace Application.Services;
-public class CartAppService : ICartAppService
+public class CartAppService : ICartAppService, ICartReadOnlyAppService
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly ICurrentUseService _currentUserAppService;

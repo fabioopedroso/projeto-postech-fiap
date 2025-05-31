@@ -6,7 +6,7 @@ using Core.Entity;
 using Core.Interfaces.Repository;
 
 namespace Application.Services;
-public class GameAppService : IGameAppService
+public class GameAppService : IGameAppService, IGameReadOnlyAppService
 {
     private readonly IGameRepository _gameRepository;
     private readonly IGameCacheService _gameCacheService;
