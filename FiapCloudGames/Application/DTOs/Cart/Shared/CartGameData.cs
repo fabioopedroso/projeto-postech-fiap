@@ -6,4 +6,5 @@ public class CartGameData
     public string Description { get; set; }
     public string Genre { get; set; }
     public decimal Price { get; set; }
+    public decimal DiscountedPrice { get; set; }
 }

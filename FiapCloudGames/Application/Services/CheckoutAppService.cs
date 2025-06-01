@@ -28,7 +28,8 @@ public class CheckoutAppService : ICheckoutAppService
 
         try
         {
-            var cartGames = await _unitOfWork.Carts.GetGamesByUserIdAsync(userId);
+            var cart = await _unitOfWork.Carts.GetCartByUserIdAsync(userId);
+            var cartGames = cart.Games.ToList();
             var totalPrice = await _unitOfWork.Carts.GetTotalPriceAsync(userId);
 
             if (!cartGames.Any())
@@ -49,7 +50,7 @@ public class CheckoutAppService : ICheckoutAppService
                 {
                     Id = g.Id,
                     Name = g.Name,
-                    Price = g.Amount
+                    Price = g.GetDiscountedPrice()
                 }).ToList(),
                 TotalPrice = totalPrice
             };

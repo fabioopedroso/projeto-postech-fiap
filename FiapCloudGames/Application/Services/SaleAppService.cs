@@ -88,19 +88,26 @@ public class SaleAppService : ISaleAppService
     public async Task AddGameToSale(UpdateSaleGameDto dto)
     {
         var sale = await _unitOfWork.Sales.GetSaleWithGamesByIdAsync(dto.SaleId);
-        if(sale == null)
+        if (sale == null)
             throw new NotFoundException("A promoção informada não foi localizada");
 
         ValidateSale(sale);
 
-        var game = await _unitOfWork.Games.GetByIdAsync(dto.GameId);
+        var game = await _unitOfWork.Games.GetGameWithActiveSalesByIdAsync(dto.GameId);
+        if (game == null)
+            throw new NotFoundException("O jogo informado não foi localizado");
 
-        if(sale.Games.Any(g => g.Id == game.Id))
+        var isInAnotherActiveSale = game.Sales.Any(s => s.Id != sale.Id && s.IsActive);
+        if (isInAnotherActiveSale)
+            throw new InvalidOperationException("O jogo informado já está vinculado a uma promoção ativa.");
+
+        if (sale.Games.Any(g => g.Id == game.Id))
             throw new InvalidOperationException("O jogo informado já está atribuído a essa promoção.");
 
         sale.Games.Add(game);
         await _unitOfWork.Sales.UpdateAsync(sale);
     }
+
 
     public async Task RemoveGameFromSale(UpdateSaleGameDto dto)
     {
@@ -116,6 +123,16 @@ public class SaleAppService : ISaleAppService
             throw new InvalidOperationException("O jogo informado não está atribuído a essa promoção.");
 
         sale.Games.Remove(game);
+        await _unitOfWork.Sales.UpdateAsync(sale);
+    }
+
+    public async Task SetActiveStatusAsync(SetSaleActiveStatusDto dto)
+    {
+        var sale = await _unitOfWork.Sales.GetByIdAsync(dto.Id);
+        if (sale == null)
+            throw new NotFoundException("A promoção informada não foi localizada.");
+        
+        sale.IsActive = dto.IsActive;
         await _unitOfWork.Sales.UpdateAsync(sale);
     }
 

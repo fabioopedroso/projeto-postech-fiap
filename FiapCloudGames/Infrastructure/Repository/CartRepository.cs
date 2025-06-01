@@ -23,18 +23,11 @@ namespace Infrastructure.Repository
             await _context.SaveChangesAsync();
         }
 
-        public async Task<IEnumerable<Game>> GetGamesByUserIdAsync(int userId)
-        {
-            return await _context.Set<Cart>()
-                .Where(c => c.User.Id == userId)
-                .SelectMany(c => c.Games)
-                .ToListAsync();
-        }
-
         public async Task<Cart> GetCartByUserIdAsync(int userId)
         {
             return await _context.Carts
                 .Include(c => c.Games)
+                    .ThenInclude(g => g.Sales)
                 .FirstAsync(c => c.User.Id == userId);
         }
 
@@ -70,7 +63,7 @@ namespace Infrastructure.Repository
         public async Task<decimal> GetTotalPriceAsync(int userId)
         {
             var cart = await GetCartByUserIdAsync(userId);
-            return cart.Games.Sum(g => g.Price.Amount);
+            return cart.Games.Sum(game => game.GetDiscountedPrice());
         }
 
         public async Task<int> GetItemCountAsync(int userId)

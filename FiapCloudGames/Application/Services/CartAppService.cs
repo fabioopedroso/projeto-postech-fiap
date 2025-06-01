@@ -57,15 +57,16 @@ public class CartAppService : ICartAppService
 
     private async Task<List<CartGameData>> GetAllGames()
     {
-        var games = await _unitOfWork.Carts.GetGamesByUserIdAsync(_currentUserAppService.UserId);
+        var cart = await _unitOfWork.Carts.GetCartByUserIdAsync(_currentUserAppService.UserId);
 
-        return games.Select(g => new CartGameData
+        return cart.Games.Select(g => new CartGameData
         {
             Id = g.Id,
             Name = g.Name,
             Description = g.Description,
             Genre = g.Genre,
-            Price = g.Amount
+            Price = g.Amount,
+            DiscountedPrice = g.GetDiscountedPrice()
         }).ToList();
     }
 

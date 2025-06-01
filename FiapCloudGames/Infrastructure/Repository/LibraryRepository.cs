@@ -27,6 +27,7 @@ namespace Infrastructure.Repository
             return await _context.Set<Library>()
                 .Where(l => l.User.Id == userId)
                 .SelectMany(l => l.Games)
+                .Include(g => g.Sales)
                 .ToListAsync();
         }
 

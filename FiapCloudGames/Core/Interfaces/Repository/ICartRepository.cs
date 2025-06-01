@@ -6,7 +6,6 @@ namespace Core.Interfaces.Repository
     {
         Task CreateAsync(Cart cart);
         Task<Cart> GetCartByUserIdAsync(int userId);
-        Task<IEnumerable<Game>> GetGamesByUserIdAsync(int userId);
         Task AddGameAsync(int userId, Game game);
         Task RemoveGameAsync(int userId, Game game);
         Task ClearCartAsync(int userId);

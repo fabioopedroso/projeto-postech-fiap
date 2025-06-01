@@ -14,5 +14,23 @@ public class Game : EntityBase
     public ICollection<Cart> Carts { get; set; } = new List<Cart>();
 
     public decimal Amount
-        => Price.Amount;    
+        => Price.Amount;
+
+    public decimal GetDiscountPercentage()
+    {
+        var activeSale = Sales?.FirstOrDefault(s => s.IsCurrentlyActive());
+        if (activeSale == null)
+            return 0;
+        return activeSale.DiscountPercentage.Value;
+    }
+
+    public decimal GetDiscountedPrice()
+    {
+        var activeSale = Sales?.FirstOrDefault(s => s.IsCurrentlyActive());
+        if (activeSale == null)
+            return Price.Amount;
+
+        var discount = activeSale.DiscountPercentage.Value;
+        return Math.Round(Price.Amount * (1 - discount), 2);
+    }
 }

@@ -41,7 +41,7 @@ public class GameAppService : IGameAppService
 
     public async Task<IEnumerable<GameDto>> GetAllAsync()
     {
-        var games = await _gameRepository.GetAllAsync();
+        var games = await _gameRepository.GetAllGamesWithSalesAsync();
 
         return games.Select(game => new GameDto()
         {
@@ -51,13 +51,15 @@ public class GameAppService : IGameAppService
             Name = game.Name,
             Description = game.Description,
             Genre = game.Genre,
-            Price = game.Amount
+            Price = game.Amount,
+            DiscountPercentage = game.GetDiscountPercentage(),
+            DiscountedPrice = game.GetDiscountedPrice()
         });
     }
 
     public async Task<GameDto> GetByIdAsync(int id)
     {
-        var game = await _gameRepository.GetByIdAsync(id);
+        var game = await _gameRepository.GetAllGamesWithSalesByIdAsync(id);
 
         return new GameDto()
         {
@@ -67,11 +69,13 @@ public class GameAppService : IGameAppService
             Name = game.Name,
             Description = game.Description,
             Genre = game.Genre,
-            Price = game.Amount
+            Price = game.Amount,
+            DiscountPercentage = game.GetDiscountPercentage(),
+            DiscountedPrice = game.GetDiscountedPrice()
         };
     }
 
-    public async Task SetActiveStatusAsync(SetActiveStatusDto dto)
+    public async Task SetActiveStatusAsync(SetGameActiveStatusDto dto)
     {
         var game = await _gameRepository.GetByIdAsync(dto.Id);
         game.IsActive = dto.IsActive;

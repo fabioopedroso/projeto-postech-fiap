@@ -10,4 +10,5 @@ public interface ISaleAppService
     Task<SaleDto> GetbyId(int id);
     Task AddGameToSale(UpdateSaleGameDto dto);
     Task RemoveGameFromSale(UpdateSaleGameDto dto);
+    Task SetActiveStatusAsync(SetSaleActiveStatusDto dto);
 }

@@ -8,6 +8,6 @@ public interface IGameAppService
     Task UpdateAsync(UpdateGameDto dto);
     Task<IEnumerable<GameDto>> GetAllAsync();
     Task<GameDto> GetByIdAsync(int id);
-    Task SetActiveStatusAsync(SetActiveStatusDto dto);
+    Task SetActiveStatusAsync(SetGameActiveStatusDto dto);
     Task SetPriceAsync(SetPriceDto dto);
 }

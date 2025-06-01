@@ -61,7 +61,7 @@ public class GameController : ControllerBase
 
     [HttpPatch("SetActiveStatus")]
     [Authorize(Roles = "Administrator")]
-    public async Task<IActionResult> SetActiveStatus([FromBody] SetActiveStatusDto dto)
+    public async Task<IActionResult> SetActiveStatus([FromBody] SetGameActiveStatusDto dto)
     {
         await _gameAppService.SetActiveStatusAsync(dto);
         _gameCacheService.InvalidateGamesCache();
