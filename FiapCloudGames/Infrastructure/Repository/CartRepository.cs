@@ -70,7 +70,7 @@ namespace Infrastructure.Repository
         public async Task<decimal> GetTotalPriceAsync(int userId)
         {
             var cart = await GetCartByUserIdAsync(userId);
-            return cart.Games.Sum(g => g.Price);
+            return cart.Games.Sum(g => g.Price.Amount);
         }
 
         public async Task<int> GetItemCountAsync(int userId)

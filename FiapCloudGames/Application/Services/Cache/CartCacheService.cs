@@ -8,14 +8,14 @@ namespace Application.Services.Cache;
 public class CartCacheService : ICartCacheService
 {
     private readonly IMemoryCache _memoryCache;
-    private readonly ICartReadOnlyAppService _cartReadOnlyAppService;
     private readonly ICurrentUseService _currentUserService;
+    private readonly ICartAppService _cartAppService;
 
-    public CartCacheService(IMemoryCache memoryCache, ICartReadOnlyAppService cartReadOnlyAppService, ICurrentUseService currentUserService)
+    public CartCacheService(IMemoryCache memoryCache, ICurrentUseService currentUserService, ICartAppService cartAppService)
     {
         _memoryCache = memoryCache;
-        _cartReadOnlyAppService = cartReadOnlyAppService;
         _currentUserService = currentUserService;
+        _cartAppService = cartAppService;
     }
 
     public async Task<CartSummaryDto> GetCachedCartSummaryAsync()
@@ -26,7 +26,7 @@ public class CartCacheService : ICartCacheService
         return await _memoryCache.GetOrCreateAsync(cacheKey, async entry =>
         {
             entry.SlidingExpiration = TimeSpan.FromMinutes(5);
-            return await _cartReadOnlyAppService.GetCartSummary();
+            return await _cartAppService.GetCartSummary();
         });
     }
 

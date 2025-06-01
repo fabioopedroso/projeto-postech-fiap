@@ -6,17 +6,15 @@ using Application.Interfaces.Cache;
 using Core.Interfaces.Repository;
 
 namespace Application.Services;
-public class CartAppService : ICartAppService, ICartReadOnlyAppService
+public class CartAppService : ICartAppService
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly ICurrentUseService _currentUserAppService;
-    private readonly ICartCacheService _cartCacheService;
 
-    public CartAppService(IUnitOfWork unitOfWork, ICurrentUseService currentUserAppService, ICartCacheService cartCacheService)
+    public CartAppService(IUnitOfWork unitOfWork, ICurrentUseService currentUserAppService)
     {
         _unitOfWork = unitOfWork;
         _currentUserAppService = currentUserAppService;
-        _cartCacheService = cartCacheService;
     }
 
     public async Task AddGame(int gameId)
@@ -27,8 +25,6 @@ public class CartAppService : ICartAppService, ICartReadOnlyAppService
 
         await _unitOfWork.Carts.AddGameAsync(_currentUserAppService.UserId, game);
         await _unitOfWork.CommitAsync();
-
-        _cartCacheService.InvalidateCartCache(_currentUserAppService.UserId);
     }
     public async Task RemoveGame(int gameId)
     {
@@ -38,15 +34,11 @@ public class CartAppService : ICartAppService, ICartReadOnlyAppService
 
         await _unitOfWork.Carts.RemoveGameAsync(_currentUserAppService.UserId, game);
         await _unitOfWork.CommitAsync();
-
-        _cartCacheService.InvalidateCartCache(_currentUserAppService.UserId);
     }
 
     public async Task ClearCart()
     {
         await _unitOfWork.Carts.ClearCartAsync(_currentUserAppService.UserId);
-        
-        _cartCacheService.InvalidateCartCache(_currentUserAppService.UserId);
     }
 
     public async Task<CartSummaryDto> GetCartSummary()
@@ -63,7 +55,7 @@ public class CartAppService : ICartAppService, ICartReadOnlyAppService
         };
     }
 
-    public async Task<List<CartGameData>> GetAllGames()
+    private async Task<List<CartGameData>> GetAllGames()
     {
         var games = await _unitOfWork.Carts.GetGamesByUserIdAsync(_currentUserAppService.UserId);
 
@@ -73,16 +65,16 @@ public class CartAppService : ICartAppService, ICartReadOnlyAppService
             Name = g.Name,
             Description = g.Description,
             Genre = g.Genre,
-            Price = g.Price
+            Price = g.Amount
         }).ToList();
     }
 
-    public Task<int> GetItemCount()
+    private Task<int> GetItemCount()
     {
         return _unitOfWork.Carts.GetItemCountAsync(_currentUserAppService.UserId);
     }
 
-    public Task<decimal> GetTotalPrice()
+    private Task<decimal> GetTotalPrice()
     {
         return _unitOfWork.Carts.GetTotalPriceAsync(_currentUserAppService.UserId);
     }

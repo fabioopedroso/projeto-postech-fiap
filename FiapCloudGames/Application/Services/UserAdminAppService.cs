@@ -55,7 +55,10 @@ public class UserAdminAppService : IUserAdminAppService
         {
             Id = u.Id,
             UserName = u.UserName,
-            Email = u.Email.Address
+            Email = u.Email.Address,
+            IsActive = u.IsActive,
+            CreationDate = u.CreationDate,
+            UserType = u.UserType
         });
     }
 

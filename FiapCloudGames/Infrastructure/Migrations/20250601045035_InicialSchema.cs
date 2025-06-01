@@ -9,7 +9,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class CreateInicialSchema : Migration
+    public partial class InicialSchema : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -184,17 +184,17 @@ namespace Infrastructure.Migrations
                 columns: new[] { "Id", "CreationDate", "Description", "Genre", "IsActive", "Name", "Price" },
                 values: new object[,]
                 {
-                    { 1, new DateTime(2025, 5, 24, 18, 44, 15, 422, DateTimeKind.Local).AddTicks(4905), "A vast action RPG world", "RPG", true, "Elden Ring", 299.99m },
-                    { 2, new DateTime(2025, 5, 24, 18, 44, 15, 422, DateTimeKind.Local).AddTicks(4907), "Farming and life simulator", "Simulation", true, "Stardew Valley", 39.99m },
-                    { 3, new DateTime(2025, 5, 24, 18, 44, 15, 422, DateTimeKind.Local).AddTicks(4909), "Roguelike action-packed dungeon crawler", "Action", true, "Hades", 79.99m },
-                    { 4, new DateTime(2025, 5, 24, 18, 44, 15, 422, DateTimeKind.Local).AddTicks(4910), "Challenging platformer with a touching story", "Platformer", true, "Celeste", 49.99m },
-                    { 5, new DateTime(2025, 5, 24, 18, 44, 15, 422, DateTimeKind.Local).AddTicks(4912), "Open-world fantasy RPG with deep narrative", "RPG", true, "The Witcher 3", 119.99m }
+                    { 1, new DateTime(2025, 6, 1, 1, 50, 34, 833, DateTimeKind.Local).AddTicks(5311), "A vast action RPG world", "RPG", true, "Elden Ring", 299.99m },
+                    { 2, new DateTime(2025, 6, 1, 1, 50, 34, 833, DateTimeKind.Local).AddTicks(5314), "Farming and life simulator", "Simulation", true, "Stardew Valley", 39.99m },
+                    { 3, new DateTime(2025, 6, 1, 1, 50, 34, 833, DateTimeKind.Local).AddTicks(5315), "Roguelike action-packed dungeon crawler", "Action", true, "Hades", 79.99m },
+                    { 4, new DateTime(2025, 6, 1, 1, 50, 34, 833, DateTimeKind.Local).AddTicks(5317), "Challenging platformer with a touching story", "Platformer", true, "Celeste", 49.99m },
+                    { 5, new DateTime(2025, 6, 1, 1, 50, 34, 833, DateTimeKind.Local).AddTicks(5318), "Open-world fantasy RPG with deep narrative", "RPG", true, "The Witcher 3", 119.99m }
                 });
 
             migrationBuilder.InsertData(
                 table: "User",
                 columns: new[] { "Id", "CreationDate", "Email", "IsActive", "Password", "UserName", "UserType" },
-                values: new object[] { -1, new DateTime(2025, 5, 24, 18, 44, 15, 422, DateTimeKind.Local).AddTicks(4774), "admin@admin.com.br", true, "AQAAAAEAACcQAAAAECeoJ4RUQe9tBkQjHXoUorXRaMWvJoHLp4gG/h5vvxuRNQtLULdIp5NC0tFn5/e14w==", "admin", 1 });
+                values: new object[] { -1, new DateTime(2025, 6, 1, 1, 50, 34, 833, DateTimeKind.Local).AddTicks(5165), "admin@admin.com.br", true, "AQAAAAIAAYagAAAAEBPYC7x7jttzvV1944u+w36Ol6LKArJpGosFZLDgLkp+eMK2KTWetfUMpt2QwHPprQ==", "admin", 1 });
 
             migrationBuilder.CreateIndex(
                 name: "IX_Cart_UserId",

@@ -14,11 +14,13 @@ public class CartController : ControllerBase
 {
     private readonly ICartAppService _cartAppService;
     private readonly ICartCacheService _cartCacheService;
+    private readonly ICurrentUseService _currentUseService;
 
-    public CartController(ICartCacheService cartCacheService, ICartAppService cartAppService)
+    public CartController(ICartCacheService cartCacheService, ICartAppService cartAppService, ICurrentUseService currentUseService)
     {
         _cartCacheService = cartCacheService;
         _cartAppService = cartAppService;
+        _currentUseService = currentUseService;
     }
 
     [HttpGet("Summary")]
@@ -28,31 +30,11 @@ public class CartController : ControllerBase
         return Ok(cartSummary);
     }
 
-    [HttpGet("Games")]
-    public async Task<IActionResult> GetAllGames()
-    {
-        var cartSummary = await _cartCacheService.GetCachedCartSummaryAsync();
-        return Ok(cartSummary.Games);
-    }
-
-    [HttpGet("TotalPrice")]
-    public async Task<IActionResult> GetTotalPrice()
-    {
-        var cartSummary = await _cartCacheService.GetCachedCartSummaryAsync();
-        return Ok(cartSummary.TotalPrice);
-    }
-
-    [HttpGet("ItemCount")]
-    public async Task<IActionResult> GetItemCount()
-    {
-        var cartSummary = await _cartCacheService.GetCachedCartSummaryAsync();
-        return Ok(cartSummary.ItemCount);
-    }
-
     [HttpPost("Games/{gameId}")]
     public async Task<IActionResult> AddGame(int gameId)
     {
         await _cartAppService.AddGame(gameId);
+        _cartCacheService.InvalidateCartCache(_currentUseService.UserId);
         return Ok();
     }
 
@@ -60,6 +42,7 @@ public class CartController : ControllerBase
     public async Task<IActionResult> RemoveGame(int gameId)
     {
         await _cartAppService.RemoveGame(gameId);
+        _cartCacheService.InvalidateCartCache(_currentUseService.UserId);
         return Ok();
     }
 
@@ -67,6 +50,7 @@ public class CartController : ControllerBase
     public async Task<IActionResult> ClearCart()
     {
         await _cartAppService.ClearCart();
+        _cartCacheService.InvalidateCartCache(_currentUseService.UserId);
         return Ok();
     }
 }

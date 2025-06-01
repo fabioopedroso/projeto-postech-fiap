@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250524214415_CreateInicialSchema")]
-    partial class CreateInicialSchema
+    [Migration("20250601045035_InicialSchema")]
+    partial class InicialSchema
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -96,7 +96,7 @@ namespace Infrastructure.Migrations
                         new
                         {
                             Id = 1,
-                            CreationDate = new DateTime(2025, 5, 24, 18, 44, 15, 422, DateTimeKind.Local).AddTicks(4905),
+                            CreationDate = new DateTime(2025, 6, 1, 1, 50, 34, 833, DateTimeKind.Local).AddTicks(5311),
                             Description = "A vast action RPG world",
                             Genre = "RPG",
                             IsActive = true,
@@ -106,7 +106,7 @@ namespace Infrastructure.Migrations
                         new
                         {
                             Id = 2,
-                            CreationDate = new DateTime(2025, 5, 24, 18, 44, 15, 422, DateTimeKind.Local).AddTicks(4907),
+                            CreationDate = new DateTime(2025, 6, 1, 1, 50, 34, 833, DateTimeKind.Local).AddTicks(5314),
                             Description = "Farming and life simulator",
                             Genre = "Simulation",
                             IsActive = true,
@@ -116,7 +116,7 @@ namespace Infrastructure.Migrations
                         new
                         {
                             Id = 3,
-                            CreationDate = new DateTime(2025, 5, 24, 18, 44, 15, 422, DateTimeKind.Local).AddTicks(4909),
+                            CreationDate = new DateTime(2025, 6, 1, 1, 50, 34, 833, DateTimeKind.Local).AddTicks(5315),
                             Description = "Roguelike action-packed dungeon crawler",
                             Genre = "Action",
                             IsActive = true,
@@ -126,7 +126,7 @@ namespace Infrastructure.Migrations
                         new
                         {
                             Id = 4,
-                            CreationDate = new DateTime(2025, 5, 24, 18, 44, 15, 422, DateTimeKind.Local).AddTicks(4910),
+                            CreationDate = new DateTime(2025, 6, 1, 1, 50, 34, 833, DateTimeKind.Local).AddTicks(5317),
                             Description = "Challenging platformer with a touching story",
                             Genre = "Platformer",
                             IsActive = true,
@@ -136,7 +136,7 @@ namespace Infrastructure.Migrations
                         new
                         {
                             Id = 5,
-                            CreationDate = new DateTime(2025, 5, 24, 18, 44, 15, 422, DateTimeKind.Local).AddTicks(4912),
+                            CreationDate = new DateTime(2025, 6, 1, 1, 50, 34, 833, DateTimeKind.Local).AddTicks(5318),
                             Description = "Open-world fantasy RPG with deep narrative",
                             Genre = "RPG",
                             IsActive = true,
@@ -182,18 +182,12 @@ namespace Infrastructure.Migrations
                     b.Property<decimal>("DiscountPercentage")
                         .HasColumnType("NUMERIC(3,2)");
 
-                    b.Property<DateTime>("EndDate")
-                        .HasColumnType("TIMESTAMP");
-
                     b.Property<bool>("IsActive")
                         .HasColumnType("BOOLEAN");
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("VARCHAR(100)");
-
-                    b.Property<DateTime>("StartDate")
-                        .HasColumnType("TIMESTAMP");
 
                     b.HasKey("Id");
 
@@ -273,10 +267,10 @@ namespace Infrastructure.Migrations
                         new
                         {
                             Id = -1,
-                            CreationDate = new DateTime(2025, 5, 24, 18, 44, 15, 422, DateTimeKind.Local).AddTicks(4774),
+                            CreationDate = new DateTime(2025, 6, 1, 1, 50, 34, 833, DateTimeKind.Local).AddTicks(5165),
                             Email = "admin@admin.com.br",
                             IsActive = true,
-                            Password = "AQAAAAEAACcQAAAAECeoJ4RUQe9tBkQjHXoUorXRaMWvJoHLp4gG/h5vvxuRNQtLULdIp5NC0tFn5/e14w==",
+                            Password = "AQAAAAIAAYagAAAAEBPYC7x7jttzvV1944u+w36Ol6LKArJpGosFZLDgLkp+eMK2KTWetfUMpt2QwHPprQ==",
                             UserName = "admin",
                             UserType = 1
                         });
@@ -317,6 +311,33 @@ namespace Infrastructure.Migrations
                         .IsRequired();
 
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Core.Entity.Sale", b =>
+                {
+                    b.OwnsOne("Core.ValueObjects.DateRange", "Period", b1 =>
+                        {
+                            b1.Property<int>("SaleId")
+                                .HasColumnType("INT");
+
+                            b1.Property<DateTime>("End")
+                                .HasColumnType("TIMESTAMP")
+                                .HasColumnName("EndDate");
+
+                            b1.Property<DateTime>("Start")
+                                .HasColumnType("TIMESTAMP")
+                                .HasColumnName("StartDate");
+
+                            b1.HasKey("SaleId");
+
+                            b1.ToTable("Sale");
+
+                            b1.WithOwner()
+                                .HasForeignKey("SaleId");
+                        });
+
+                    b.Navigation("Period")
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("GameLibrary", b =>

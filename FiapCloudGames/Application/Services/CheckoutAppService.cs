@@ -49,7 +49,7 @@ public class CheckoutAppService : ICheckoutAppService
                 {
                     Id = g.Id,
                     Name = g.Name,
-                    Price = g.Price
+                    Price = g.Amount
                 }).ToList(),
                 TotalPrice = totalPrice
             };

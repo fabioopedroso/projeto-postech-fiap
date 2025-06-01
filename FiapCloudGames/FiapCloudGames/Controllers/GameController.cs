@@ -44,6 +44,7 @@ public class GameController : ControllerBase
     public async Task<IActionResult> Add([FromBody] AddGameDto dto)
     {
         var result = await _gameAppService.AddAsync(dto);
+        _gameCacheService.InvalidateGamesCache();
         return Ok(result);
     }
 
@@ -53,6 +54,8 @@ public class GameController : ControllerBase
     {
         dto.Id = id;
         await _gameAppService.UpdateAsync(dto);
+        _gameCacheService.InvalidateGamesCache();
+        _gameCacheService.InvalidateGameCache(dto.Id);
         return NoContent();
     }
 
@@ -61,6 +64,8 @@ public class GameController : ControllerBase
     public async Task<IActionResult> SetActiveStatus([FromBody] SetActiveStatusDto dto)
     {
         await _gameAppService.SetActiveStatusAsync(dto);
+        _gameCacheService.InvalidateGamesCache();
+        _gameCacheService.InvalidateGameCache(dto.Id);
         return NoContent();
     }
 
@@ -69,6 +74,8 @@ public class GameController : ControllerBase
     public async Task<IActionResult> SetPrice([FromBody] SetPriceDto dto)
     {
         await _gameAppService.SetPriceAsync(dto);
+        _gameCacheService.InvalidateGamesCache();
+        _gameCacheService.InvalidateGameCache(dto.Id);
         return NoContent();
     }
 }

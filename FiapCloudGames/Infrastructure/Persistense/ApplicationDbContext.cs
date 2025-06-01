@@ -47,11 +47,11 @@ public class ApplicationDbContext : DbContext
         );
 
         modelBuilder.Entity<Game>().HasData(
-            new Game { Id = 1, Name = "Elden Ring", Description = "A vast action RPG world", Genre = "RPG", Price = 299.99m, IsActive = true, CreationDate = DateTime.Now },
-            new Game { Id = 2, Name = "Stardew Valley", Description = "Farming and life simulator", Genre = "Simulation", Price = 39.99m, IsActive = true, CreationDate = DateTime.Now },
-            new Game { Id = 3, Name = "Hades", Description = "Roguelike action-packed dungeon crawler", Genre = "Action", Price = 79.99m, IsActive = true, CreationDate = DateTime.Now },
-            new Game { Id = 4, Name = "Celeste", Description = "Challenging platformer with a touching story", Genre = "Platformer", Price = 49.99m, IsActive = true, CreationDate = DateTime.Now },
-            new Game { Id = 5, Name = "The Witcher 3", Description = "Open-world fantasy RPG with deep narrative", Genre = "RPG", Price = 119.99m, IsActive = true, CreationDate = DateTime.Now }
+            new Game { Id = 1, Name = "Elden Ring", Description = "A vast action RPG world", Genre = "RPG", Price = new Price(299.99m), IsActive = true, CreationDate = DateTime.Now },
+            new Game { Id = 2, Name = "Stardew Valley", Description = "Farming and life simulator", Genre = "Simulation", Price = new Price(39.99m), IsActive = true, CreationDate = DateTime.Now },
+            new Game { Id = 3, Name = "Hades", Description = "Roguelike action-packed dungeon crawler", Genre = "Action", Price = new Price(79.99m), IsActive = true, CreationDate = DateTime.Now },
+            new Game { Id = 4, Name = "Celeste", Description = "Challenging platformer with a touching story", Genre = "Platformer", Price = new Price(49.99m), IsActive = true, CreationDate = DateTime.Now },
+            new Game { Id = 5, Name = "The Witcher 3", Description = "Open-world fantasy RPG with deep narrative", Genre = "RPG", Price = new Price(119.99m), IsActive = true, CreationDate = DateTime.Now }
         );
     }
 }
