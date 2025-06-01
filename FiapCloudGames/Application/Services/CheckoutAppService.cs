@@ -23,6 +23,7 @@ public class CheckoutAppService : ICheckoutAppService
     {
         var userId = _currentUserAppService.UserId;
         var userName = _currentUserAppService.UserName;
+        var email = _currentUserAppService.Email;
 
         await _unitOfWork.BeginTransactionAsync();
 
@@ -46,6 +47,7 @@ public class CheckoutAppService : ICheckoutAppService
             {
                 UserId = userId,
                 UserName = userName,
+                Email = email,
                 Games = cartGames.Select(g => new PurchasedGameDto
                 {
                     Id = g.Id,
