@@ -72,7 +72,10 @@ public class UserAdminAppService : IUserAdminAppService
         {
             Id = user.Id,
             UserName = user.UserName,
-            Email = user.Email.Address
+            Email = user.Email.Address,
+            IsActive = user.IsActive,
+            CreationDate = user.CreationDate,
+            UserType = user.UserType
         };
     }
 
