@@ -18,14 +18,7 @@ public class AuthController : ControllerBase
     [HttpPost("Login")]
     public async Task<IActionResult> Login([FromBody] LoginDto user)
     {
-        try
-        {
-            var token = await _authAppService.GenerateToken(user);
-            return Ok(new { Token = token });
-        }
-        catch (Exception ex)
-        {
-            return BadRequest(new { ex.Message });
-        }
+        var token = await _authAppService.GenerateToken(user);
+        return Ok(new { Token = token });
     }
 }

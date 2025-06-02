@@ -1,6 +1,7 @@
 ﻿using Application.Contracts;
 using Application.DTOs.Cart.Result;
 using Application.DTOs.Cart.Shared;
+using Application.Exceptions;
 using Application.Interfaces;
 using Application.Interfaces.Cache;
 using Core.Interfaces.Repository;
@@ -21,7 +22,7 @@ public class CartAppService : ICartAppService
     {
         var game = await _unitOfWork.Games.GetByIdAsync(gameId);
         if (game == null)
-            throw new Exception("Jogo não encontrado.");
+            throw new NotFoundException("Jogo não encontrado.");
 
         await _unitOfWork.Carts.AddGameAsync(_currentUserAppService.UserId, game);
         await _unitOfWork.CommitAsync();
@@ -30,7 +31,7 @@ public class CartAppService : ICartAppService
     {
         var game = await _unitOfWork.Games.GetByIdAsync(gameId);
         if (game == null)
-            throw new Exception("Jogo não encontrado.");
+            throw new NotFoundException("Jogo não encontrado.");
 
         await _unitOfWork.Carts.RemoveGameAsync(_currentUserAppService.UserId, game);
         await _unitOfWork.CommitAsync();

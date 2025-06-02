@@ -2,6 +2,7 @@
 using Application.DTOs.Game.Result;
 using Application.DTOs.User.Results;
 using Application.DTOs.User.Signatures;
+using Application.Exceptions;
 using Application.Interfaces;
 using Core.Entity;
 using Core.Enums;
@@ -46,7 +47,7 @@ namespace Application.Services
         {
             var user = await _unitOfWork.Users.GetByIdAsync(_currentUser.UserId);
             if (user is null)
-                throw new InvalidOperationException("Usuário não encontrado.");
+                throw new NotFoundException("Usuário não encontrado.");
 
             user.ChangePassword(dto.Password, dto.NewPassword);
 
@@ -57,10 +58,10 @@ namespace Application.Services
         {
             var user = await _unitOfWork.Users.GetByIdAsync(_currentUser.UserId);
             if (user is null)
-                throw new InvalidOperationException("Usuário não encontrado.");
+                throw new NotFoundException("Usuário não encontrado.");
 
             if (!user.VerifyPassword(dto.Password))
-                throw new InvalidOperationException("Senha inválida.");
+                throw new UnauthorizedException("Senha inválida.");
 
             await _unitOfWork.Users.DeleteAsync(user);
         }
@@ -70,13 +71,13 @@ namespace Application.Services
         {
             var email = new Email(emailString);
             if (await _unitOfWork.Users.ExistsByEmailAsync(email))
-                throw new InvalidOperationException("O E-mail informado já está cadastrado.");
+                throw new ConflictException("O E-mail informado já está cadastrado.");
         }
 
         private async Task EnsureUserNameIsUnique(string userName)
         {
             if (await _unitOfWork.Users.GetByUserNameAsync(userName) is not null)
-                throw new InvalidOperationException("Este nome de usuário já está sendo usado.");
+                throw new ConflictException("Este nome de usuário já está sendo usado.");
         }
 
         private User BuildUser(RegisterDto signature)

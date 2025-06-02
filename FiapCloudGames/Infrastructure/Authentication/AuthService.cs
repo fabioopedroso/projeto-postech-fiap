@@ -1,5 +1,6 @@
 ﻿using Application.Contracts;
 using Application.DTOs.Auth.Signature;
+using Application.Exceptions;
 using Core.Interfaces.Repository;
 using Core.ValueObjects;
 using Microsoft.AspNetCore.Identity;
@@ -43,13 +44,13 @@ public class AuthService : IAuthService
         var user = await _userRepository.GetByUserNameAsync(login.UserName);
 
         if (user == null)
-            throw new InvalidOperationException("O usuário não foi encontrado.");
+            throw new NotFoundException("O usuário não foi encontrado.");
 
         if (!user.IsActive)
-            throw new InvalidOperationException("Usuário informado está inativo.");
+            throw new BusinessException("Usuário informado está inativo.");
 
         if (!user.VerifyPassword(login.Password))
-            throw new InvalidOperationException("Usuário ou senha inválidos.");
+            throw new UnauthorizedException("Usuário ou senha inválidos.");
 
         return user;
     }

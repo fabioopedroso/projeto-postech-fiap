@@ -1,6 +1,7 @@
 ﻿using Application.Contracts;
 using Application.DTOs.Cart.Shared;
 using Application.DTOs.Checkout.Result;
+using Application.Exceptions;
 using Application.Interfaces;
 using Application.Interfaces.Cache;
 using Core.Interfaces.Repository;
@@ -34,7 +35,7 @@ public class CheckoutAppService : ICheckoutAppService
             var totalPrice = await _unitOfWork.Carts.GetTotalPriceAsync(userId);
 
             if (!cartGames.Any())
-                throw new InvalidOperationException("Seu carrinho está vazio.");
+                throw new BusinessException("Seu carrinho está vazio.");
 
             await _unitOfWork.Libraries.AddGames(userId, cartGames);
             await _unitOfWork.Carts.ClearCartAsync(userId);

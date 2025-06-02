@@ -1,5 +1,6 @@
 ﻿using Application.DTOs.Game.Result;
 using Application.DTOs.Game.Signature;
+using Application.Exceptions;
 using Application.Interfaces;
 using Core.Entity;
 using Core.Interfaces.Repository;
@@ -60,6 +61,9 @@ public class GameAppService : IGameAppService
     public async Task<GameDto> GetByIdAsync(int id)
     {
         var game = await _gameRepository.GetAllGamesWithSalesByIdAsync(id);
+
+        if(game == null)
+            throw new NotFoundException($"Jogo não encontrado.");
 
         return new GameDto()
         {

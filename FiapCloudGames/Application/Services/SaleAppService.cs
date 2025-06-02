@@ -99,10 +99,10 @@ public class SaleAppService : ISaleAppService
 
         var isInAnotherActiveSale = game.Sales.Any(s => s.Id != sale.Id && s.IsActive);
         if (isInAnotherActiveSale)
-            throw new InvalidOperationException("O jogo informado já está vinculado a uma promoção ativa.");
+            throw new ConflictException("O jogo informado já está vinculado a uma promoção ativa.");
 
         if (sale.Games.Any(g => g.Id == game.Id))
-            throw new InvalidOperationException("O jogo informado já está atribuído a essa promoção.");
+            throw new ConflictException("O jogo informado já está atribuído a essa promoção.");
 
         sale.Games.Add(game);
         await _unitOfWork.Sales.UpdateAsync(sale);
@@ -120,7 +120,7 @@ public class SaleAppService : ISaleAppService
         var game = await _unitOfWork.Games.GetByIdAsync(dto.GameId);
 
         if (!sale.Games.Any(g => g.Id == game.Id))
-            throw new InvalidOperationException("O jogo informado não está atribuído a essa promoção.");
+            throw new BusinessException("O jogo informado não está atribuído a essa promoção.");
 
         sale.Games.Remove(game);
         await _unitOfWork.Sales.UpdateAsync(sale);
@@ -139,6 +139,6 @@ public class SaleAppService : ISaleAppService
     private async Task ValidateSale(Sale sale)
     {
         if (!sale.IsCurrentlyActive())
-            throw new InvalidOperationException("A promoção não está ativa ou fora da validade.");
+            throw new BusinessException("A promoção não está ativa ou fora da validade.");
     }
 }
