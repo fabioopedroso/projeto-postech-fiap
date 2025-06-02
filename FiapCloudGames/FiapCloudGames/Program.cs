@@ -1,16 +1,17 @@
 using API.Middlewares;
 using FiapCloudGamesApi.Middlewares;
 using FiapCloudGamesApi.Security;
+using FiapCloudGamesApi.Swagger;
 using Infrastructure.IoC;
 using Infrastructure.Persistense;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
-using System.Text;
 using Serilog;
-using Serilog.Events;
 using Serilog.Enrichers;
+using Serilog.Events;
+using System.Text;
 
 Log.Logger = new LoggerConfiguration()
     .Enrich.FromLogContext()
@@ -67,6 +68,9 @@ try
             new string[] { }
         }
         });
+
+        options.OperationFilter<OperationDescriptionFilter>();
+
     });
 
     builder.Services.AddAuthentication(x =>
