@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using System.ComponentModel.DataAnnotations;
 
 namespace Core.ValueObjects;
 
@@ -11,7 +12,7 @@ public class Password
     public Password(string rawPassword)
     {
         if (!IsValid(rawPassword))
-            throw new ArgumentException("A senha deve conter ao menos 8 caracteres, um número, uma letra e um caractere especial.");
+            throw new ValidationException("A senha deve conter ao menos 8 caracteres, um número, uma letra e um caractere especial.");
 
         Hashed = _hasher.HashPassword(null, rawPassword);
     }

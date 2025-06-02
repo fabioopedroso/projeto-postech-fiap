@@ -1,4 +1,5 @@
-﻿using System.Net.Mail;
+﻿using System.ComponentModel.DataAnnotations;
+using System.Net.Mail;
 
 namespace Core.ValueObjects;
 public class Email
@@ -8,7 +9,7 @@ public class Email
     public Email(string address)
     {
         if (!IsValidEmail(address))
-            throw new ArgumentException("O e-mail informado é inválido.", nameof(address));
+            throw new ValidationException("O e-mail informado é inválido.");
         Address = address;
     }
 
@@ -25,7 +26,18 @@ public class Email
         try
         {
             var mailAddress = new MailAddress(email);
-            return mailAddress.Address == email;
+
+            if (mailAddress.Address != email)
+                return false;
+
+            var domainParts = mailAddress.Host.Split('.');
+            if (domainParts.Length < 2)
+                return false;
+
+            if (domainParts[^1].Length < 2)
+                return false;
+
+            return true;
         }
         catch
         {

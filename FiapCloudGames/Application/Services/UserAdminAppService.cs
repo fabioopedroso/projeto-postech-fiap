@@ -118,7 +118,7 @@ public class UserAdminAppService : IUserAdminAppService
         {
             "admin" => UserType.Administrator,
             "user" => UserType.CommonUser,
-            _ => throw new ArgumentException("Role inválida")
+            _ => throw new ValidationException("Role inválida")
         };
     }
 }
